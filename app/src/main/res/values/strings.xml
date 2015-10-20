@@ -3,4 +3,8 @@
     <string name="action_settings">Settings</string>
     <string name="states">Enter state names separated by a space</string>
     <string name="symbols">Enter symbols of the alphabet separated by a space</string>
+    <string name="startState">Enter the starting state</string>
+    <string name="finalStates">Enter final state names</string>
+    <string name="next">Next</string>
+    <string name="convert">Convert</string>
 </resources>
