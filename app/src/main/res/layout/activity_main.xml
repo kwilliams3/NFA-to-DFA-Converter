@@ -3,7 +3,6 @@
     tools:context=".MainActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     android:id="@+id/mainLayout">
 
         <RelativeLayout
@@ -71,8 +70,7 @@
                 android:id="@+id/nextButton"
                 android:layout_below="@+id/finalStatesEdit"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:background="@drawable/advance_button"/>
+                android:layout_alignParentEnd="true"/>
         </RelativeLayout>
 
 </ScrollView>

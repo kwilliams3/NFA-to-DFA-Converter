@@ -1,5 +1,6 @@
 package com.example.kyle.nfatodfa;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -44,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), hi, Toast.LENGTH_SHORT).show();
                         }
                     }
+                    Intent transFuncActivity = new Intent(getApplicationContext(), TransFuncActivity.class);
+                    transFuncActivity.putExtra("stateNamesParsed", stateNamesParsed);
+                    transFuncActivity.putExtra("symbolsParsed", symbolsParsed);
+                    transFuncActivity.putExtra("finalStatesParsed", finalStatesParsed);
+                    startActivity(transFuncActivity);
                 }
             }
         });
