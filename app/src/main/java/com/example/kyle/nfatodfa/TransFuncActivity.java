@@ -1,30 +1,46 @@
 package com.example.kyle.nfatodfa;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class TransFuncActivity extends AppCompatActivity {
+    private static final String EXTRA_STATES_PARSED = "com.example.kyle.nfatodfa.MainActivity.statesParsed";
+    private static final String EXTRA_SYMBOLS_PARSED = "com.example.kyle.nfatodfa.MainActivity.symbolsParsed";
+    private static final String EXTRA_FINAL_STATES_PARSED = "com.example.kyle.nfatodfa.MainActivity.finalStatesParsed";
+
+    /**
+     * Returns an intent to transition to TransFuncActivity with the arguments used as extras
+     * @param packageContext the context of the calling activity
+     * @param statesParsed state names parsed in a string array
+     * @param symbolsParsed symbols parsed in a string array
+     * @param finalStatesParsed final states parsed in a string array
+     * @return the intent that transitions to TransFuncActivity
+     */
+    public static Intent passArgsIntent(Context packageContext, String[] statesParsed,
+                                        String[] symbolsParsed, String[] finalStatesParsed){
+        Intent i = new Intent(packageContext, TransFuncActivity.class);
+        i.putExtra(EXTRA_STATES_PARSED, statesParsed);
+        i.putExtra(EXTRA_SYMBOLS_PARSED, symbolsParsed);
+        i.putExtra(EXTRA_FINAL_STATES_PARSED, finalStatesParsed);
+
+        return i;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trans_func);
-        Intent mainActivityVars = getIntent();
-        String[] stateNames = mainActivityVars.getStringArrayExtra("stateNamesParsed");
-        String[] symbols = mainActivityVars.getStringArrayExtra("symbolsParsed");
-        String[] finalStates = mainActivityVars.getStringArrayExtra("finalStates");
-        LinearLayout myLayout = (LinearLayout) findViewById(R.id.transFuncLinearLayout);
-        addTransFuncViews(myLayout, stateNames, symbols);
+        LinearLayout transFuncInputLayout = (LinearLayout)findViewById(R.id.transFuncInputLayout);
+
+        Intent argsIntent = getIntent();
+        String[] statesParsed = argsIntent.getStringArrayExtra(EXTRA_STATES_PARSED);
+        String[] symbolsParsed = argsIntent.getStringArrayExtra(EXTRA_SYMBOLS_PARSED);
+        String[] finalStatesParsed = argsIntent.getStringArrayExtra(EXTRA_FINAL_STATES_PARSED);
     }
 
     @Override
@@ -47,19 +63,5 @@ public class TransFuncActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void addTransFuncViews(LinearLayout myLayout, String[] stateNames, String[] symbols){
-        // -------------------------USE AN ARRAY ADAPTER INSTEAD-------------------------
-        /*
-        for (String state : stateNames) {
-            for (String symbol : symbols) {
-                View tempTextViewLayout = getLayoutInflater().inflate(R.layout.transition_function_textview, null);
-                TextView tempTextView = (TextView)tempTextViewLayout.findViewById(R.id.templateForInflation);
-                tempTextView.setText("\uD835\uDEFF(" + state + ", " + symbol + ") =>");
-                myLayout.addView(tempTextView);
-            }
-        }
-        */
     }
 }

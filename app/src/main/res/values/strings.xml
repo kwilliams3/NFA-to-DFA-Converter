@@ -8,5 +8,6 @@
     <string name="next">Next</string>
     <string name="transFuncInstructs">Transition function instructions go here</string>
     <string name="convert">Convert</string>
-    <string name="title_activity_trans_func">TransFuncActivity</string>
+    <string name="titleActivityTransFunc">TransFuncActivity</string>
+    <string name="incompleteError">Please complete all fields</string>
 </resources>

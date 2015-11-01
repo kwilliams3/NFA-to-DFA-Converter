@@ -27,28 +27,26 @@ public class MainActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String stateNames = ((EditText) findViewById(R.id.stateNamesEdit)).getText().toString();
+                String states = ((EditText) findViewById(R.id.stateNamesEdit)).getText().toString();
                 String symbols = ((EditText) findViewById(R.id.symbolsEdit)).getText().toString();
                 String startingState = ((EditText) findViewById(R.id.startStateEdit)).getText().toString();
                 String finalStates = ((EditText) findViewById(R.id.finalStatesEdit)).getText().toString();
-                if(stateNames.equals("") | symbols.equals("") | startingState.equals("") | finalStates.equals("")){
-                    Toast.makeText(getApplicationContext(), "Please complete all fields",
+                if(states.equals("") | symbols.equals("") | startingState.equals("") | finalStates.equals("")){
+                    Toast.makeText(getApplicationContext(), R.string.incompleteError,
                             Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    String[] stateNamesParsed = stateNames.split(" ");
+                    String[] statesParsed = states.split(" ");
                     String[] symbolsParsed = symbols.split(" ");
                     String[] finalStatesParsed = finalStates.split(" ");
-                    for(String state : stateNamesParsed){
+                    for(String state : statesParsed){
                         for(String symbol : symbolsParsed){
                             String hi = "\uD835\uDEFF(" + state + ", " + symbol + ") =>";
                             Toast.makeText(getApplicationContext(), hi, Toast.LENGTH_SHORT).show();
                         }
                     }
-                    Intent transFuncActivity = new Intent(getApplicationContext(), TransFuncActivity.class);
-                    transFuncActivity.putExtra("stateNamesParsed", stateNamesParsed);
-                    transFuncActivity.putExtra("symbolsParsed", symbolsParsed);
-                    transFuncActivity.putExtra("finalStatesParsed", finalStatesParsed);
+                    Intent transFuncActivity = TransFuncActivity.passArgsIntent(getApplicationContext(),
+                            statesParsed, symbolsParsed, finalStatesParsed);
                     startActivity(transFuncActivity);
                 }
             }

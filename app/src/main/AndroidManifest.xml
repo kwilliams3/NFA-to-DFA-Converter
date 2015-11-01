@@ -18,7 +18,7 @@
         </activity>
         <activity
             android:name=".TransFuncActivity"
-            android:label="@string/title_activity_trans_func"
+            android:label="@string/titleActivityTransFunc"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
