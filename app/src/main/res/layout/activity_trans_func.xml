@@ -15,18 +15,18 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <android.support.v7.widget.RecyclerView
+    <!--<android.support.v7.widget.RecyclerView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/transRecyclerView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-    </android.support.v7.widget.RecyclerView>
+    </android.support.v7.widget.RecyclerView>-->
 
     <Button
         android:text="@string/convert"
         android:id="@+id/button"
-        android:layout_below="@+id/transFuncInputLayout"
+        android:layout_below="@+id/transFuncInstructs"
         android:layout_centerHorizontal="true"
         style="@style/advanceButton"/>
 
