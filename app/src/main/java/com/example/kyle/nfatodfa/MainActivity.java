@@ -1,6 +1,8 @@
 package com.example.kyle.nfatodfa;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,6 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    private ProgressDialog dialog;
+    private String[] statesParsed;
+    private String[] symbolsParsed;
+    private String[] finalStatesParsed;
+    private String[][] transitionComponents;
+    private String[] transitions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +46,19 @@ public class MainActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    String[] statesParsed = states.split(" ");
-                    String[] symbolsParsed = symbols.split(" ");
-                    String[] finalStatesParsed = finalStates.split(" ");
-                    Intent transFuncActivity = TransFuncActivity.passArgsIntent(getApplicationContext(),
-                            statesParsed, symbolsParsed, finalStatesParsed, startingState);
+                    statesParsed = states.split(" ");
+                    symbolsParsed = symbols.split(" ");
+                    finalStatesParsed = finalStates.split(" ");
+                    transitionComponents = new String[][]{statesParsed, symbolsParsed};
+                    dialog = new ProgressDialog(MainActivity.this);
+                    dialog.setTitle("Loading");
+                    dialog.setMessage("Loading transitions, please wait...");
+                    dialog.setCancelable(false);
+                    dialog.setIndeterminate(true);
+                    dialog.show();
+                    pairUp(transitionComponents);
+                    dialog.dismiss();
+                    Intent transFuncActivity = TransFuncActivity.passArgsIntent(getApplicationContext(), transitions);
                     startActivity(transFuncActivity);
                 }
             }
@@ -68,5 +85,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void pairUp(String[][] transitionComponents){
+        // Number of transitions will be equal to number of states times number of symbols
+        int numberOfTransitions = transitionComponents[0].length * transitionComponents[1].length;
+        transitions = new String[numberOfTransitions];
+        int stringArrayIndex = 0;
+        for(int i=0; i<transitionComponents[0].length; i++){
+            for(int j=0; j<transitionComponents[1].length; j++) {
+                String transitionText = "\uD835\uDEFF(" + transitionComponents[0][i] + ", " +
+                        transitionComponents[1][j] + ") \u2192";
+                transitions[stringArrayIndex] = transitionText;
+                stringArrayIndex++;
+            }
+        }
     }
 }

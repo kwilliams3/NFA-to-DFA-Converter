@@ -3,7 +3,8 @@
     tools:context=".MainActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/mainLayout">
+    android:id="@+id/mainLayout"
+    android:background="@color/background">
 
         <RelativeLayout
             android:layout_width="match_parent"
