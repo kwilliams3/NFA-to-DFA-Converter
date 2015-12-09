@@ -1,4 +1,4 @@
-package com.example.kyle.nfatodfa.TransFuncRecyclerViewComponents;
+package com.example.kyle.nfatodfa.TransFuncRecyclerView;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -12,7 +12,7 @@ import com.example.kyle.nfatodfa.R;
 /**
  * Created by kyle on 12/8/15.
  */
-public class TransitionViewHolder extends RecyclerView.ViewHolder {
+class TransitionViewHolder extends RecyclerView.ViewHolder {
 
     public TextView textView;
     public EditText editText;

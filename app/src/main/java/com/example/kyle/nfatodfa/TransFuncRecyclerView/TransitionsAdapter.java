@@ -1,4 +1,4 @@
-package com.example.kyle.nfatodfa.TransFuncRecyclerViewComponents;
+package com.example.kyle.nfatodfa.TransFuncRecyclerView;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

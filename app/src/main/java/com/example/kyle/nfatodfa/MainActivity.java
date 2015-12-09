@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private String[] symbolsParsed;
     private String[] finalStatesParsed;
     private String[][] transitionComponents;
-    private String[] transitions;
+    private Transition[] transitions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
