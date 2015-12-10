@@ -1,7 +1,5 @@
 package com.example.kyle.nfatodfa.FiniteAutomata;
 
-import java.util.HashMap;
-
 /**
  * Created by kyle on 12/9/15.
  */
@@ -9,7 +7,7 @@ abstract class FiniteAutomaton {
     private String[] states;
     private String[] symbols;
     private String startState;
-    private String acceptState;
+    private String[] finalStates;
 
     public String[] getStates() {
         return states;
@@ -35,11 +33,11 @@ abstract class FiniteAutomaton {
         this.startState = startState;
     }
 
-    public String getAcceptState() {
-        return acceptState;
+    public String[] getFinalStates() {
+        return finalStates;
     }
 
-    public void setAcceptState(String acceptState) {
-        this.acceptState = acceptState;
+    public void setFinalStates(String[] finalStates) {
+        this.finalStates = finalStates;
     }
 }

@@ -19,14 +19,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kyle.nfatodfa.FiniteAutomata.NFA;
+
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog dialog;
-    private String[] statesParsed;
-    private String[] symbolsParsed;
-    private String[] finalStatesParsed;
     private String[][] transitionComponents;
-    private Transition[] transitions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,19 +46,32 @@ public class MainActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    statesParsed = states.split(" ");
-                    symbolsParsed = symbols.split(" ");
-                    finalStatesParsed = finalStates.split(" ");
-                    transitionComponents = new String[][]{statesParsed, symbolsParsed};
+                    // Start a dialog in case the transition table takes a long time to fill
                     dialog = new ProgressDialog(MainActivity.this);
                     dialog.setTitle("Loading");
                     dialog.setMessage("Loading transitions, please wait...");
                     dialog.setCancelable(false);
                     dialog.setIndeterminate(true);
                     dialog.show();
-                    pairUp(transitionComponents);
-                    dialog.dismiss();
+                    String[] statesArr = states.split(" ");
+                    String[] symbolsArr = symbols.split(" ");
+                    HashMap<String, HashMap<String, String[]>> transitionTable =
+                            new HashMap<>((statesArr.length * symbolsArr.length));
+                    // Filling transitionTable
+                    for (String state : statesArr) {
+                        for (String symbol: symbolsArr) {
+                            HashMap<String, String[]> secondDimension = new HashMap<>();
+                            secondDimension.put(symbol,null);
+                            transitionTable.put(state, secondDimension);
+                        }
+                    }
+                    NFA nfa = new NFA();
+                    nfa.setStates(statesArr);
+                    nfa.setSymbols(symbolsArr);
+                    nfa.setFinalStates(finalStates.split(" "));
+                    nfa.setTransitionTable(transitionTable);
                     Intent transFuncActivity = TransFuncActivity.passArgsIntent(getApplicationContext(), transitions);
+                    dialog.dismiss();
                     startActivity(transFuncActivity);
                 }
             }
@@ -85,20 +98,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void pairUp(String[][] transitionComponents){
-        // Number of transitions will be equal to number of states times number of symbols
-        int numberOfTransitions = transitionComponents[0].length * transitionComponents[1].length;
-        transitions = new String[numberOfTransitions];
-        int stringArrayIndex = 0;
-        for(int i=0; i<transitionComponents[0].length; i++){
-            for(int j=0; j<transitionComponents[1].length; j++) {
-                String transitionText = "\uD835\uDEFF(" + transitionComponents[0][i] + ", " +
-                        transitionComponents[1][j] + ") \u2192";
-                transitions[stringArrayIndex] = transitionText;
-                stringArrayIndex++;
-            }
-        }
     }
 }
