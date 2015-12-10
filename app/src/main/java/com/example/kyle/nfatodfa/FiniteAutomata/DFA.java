@@ -12,7 +12,17 @@ public class DFA extends FiniteAutomaton {
         return transitionTable;
     }
 
-    public void setTransitionTable(HashMap<String, HashMap<String, String>> transitionTable) {
+    private void setTransitionTable(String[] states, String[] symbols) {
+        HashMap<String, HashMap<String, String>> transitionTable =
+                new HashMap<>((states.length * symbols.length));
+        // Filling transitionTable
+        for (String state : states) {
+            for (String symbol: symbols) {
+                HashMap<String, String> secondDimension = new HashMap<>();
+                secondDimension.put(symbol,null);
+                transitionTable.put(state, secondDimension);
+            }
+        }
         this.transitionTable = transitionTable;
     }
 
@@ -43,5 +53,21 @@ public class DFA extends FiniteAutomaton {
         }
 
         return transitionString;
+    }
+
+    @Override
+    public void setStates(String[] states){
+        super.setStates(states);
+        if (getSymbols() != null){
+            setTransitionTable(getStates(), getSymbols());
+        }
+    }
+
+    @Override
+    public void setSymbols(String[] symbols){
+        super.setSymbols(symbols);
+        if (getStates() != null){
+            setTransitionTable(getStates(), getSymbols());
+        }
     }
 }

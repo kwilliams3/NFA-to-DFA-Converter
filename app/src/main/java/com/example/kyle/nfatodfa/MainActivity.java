@@ -39,39 +39,21 @@ public class MainActivity extends AppCompatActivity {
                 String states = ((EditText) findViewById(R.id.stateNamesEdit)).getText().toString();
                 // Adds epsilon to the alphabet
                 String symbols = "ϵ " + ((EditText) findViewById(R.id.symbolsEdit)).getText().toString();
-                String startingState = ((EditText) findViewById(R.id.startStateEdit)).getText().toString();
+                String startState = ((EditText) findViewById(R.id.startStateEdit)).getText().toString();
                 String finalStates = ((EditText) findViewById(R.id.finalStatesEdit)).getText().toString();
-                if(states.equals("") | symbols.equals("") | startingState.equals("") | finalStates.equals("")){
+                if(states.equals("") | symbols.equals("") | startState.equals("") | finalStates.equals("")){
                     Toast.makeText(getApplicationContext(), R.string.incompleteError,
                             Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    // Start a dialog in case the transition table takes a long time to fill
-                    dialog = new ProgressDialog(MainActivity.this);
-                    dialog.setTitle("Loading");
-                    dialog.setMessage("Loading transitions, please wait...");
-                    dialog.setCancelable(false);
-                    dialog.setIndeterminate(true);
-                    dialog.show();
                     String[] statesArr = states.split(" ");
                     String[] symbolsArr = symbols.split(" ");
-                    HashMap<String, HashMap<String, String[]>> transitionTable =
-                            new HashMap<>((statesArr.length * symbolsArr.length));
-                    // Filling transitionTable
-                    for (String state : statesArr) {
-                        for (String symbol: symbolsArr) {
-                            HashMap<String, String[]> secondDimension = new HashMap<>();
-                            secondDimension.put(symbol,null);
-                            transitionTable.put(state, secondDimension);
-                        }
-                    }
                     NFA nfa = new NFA();
                     nfa.setStates(statesArr);
                     nfa.setSymbols(symbolsArr);
+                    nfa.setStartState(startState);
                     nfa.setFinalStates(finalStates.split(" "));
-                    nfa.setTransitionTable(transitionTable);
                     Intent transFuncActivity = TransFuncActivity.passArgsIntent(getApplicationContext(), transitions);
-                    dialog.dismiss();
                     startActivity(transFuncActivity);
                 }
             }
