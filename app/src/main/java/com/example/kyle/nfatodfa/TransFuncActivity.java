@@ -11,7 +11,7 @@ import com.example.kyle.nfatodfa.TransFuncRecyclerView.TransitionsAdapter;
 
 public class TransFuncActivity extends FragmentActivity {
     private static final String EXTRA_TRANSITIONS = "com.example.kyle.nfatodfa.MainActivity.transitions";
-    private Transition[] transitions;
+    private String transitions;
     private RecyclerView recyclerView;
     private TransitionsAdapter adapter;
 
@@ -28,6 +28,7 @@ public class TransFuncActivity extends FragmentActivity {
         return i;
     }
 
+    // TODO: Fix the RecyclerView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +37,7 @@ public class TransFuncActivity extends FragmentActivity {
         transitions = argsIntent.getExtras().getString(EXTRA_TRANSITIONS);
         recyclerView = (RecyclerView) findViewById(R.id.transRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new TransitionsAdapter(this, transitions);
+        adapter = new TransitionsAdapter(this, new String[]{});
         recyclerView.setAdapter(adapter);
     }
 }

@@ -1,7 +1,10 @@
 package com.example.kyle.nfatodfa;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,41 +26,19 @@ import com.example.kyle.nfatodfa.FiniteAutomata.NFA;
 
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements StatesSymbolsFragment.statesSymbolsInteractionListener{
 
-    private ProgressDialog dialog;
-    private String[][] transitionComponents;
+    private NFA nfa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button nextButton = (Button) findViewById(R.id.nextButton);
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String states = ((EditText) findViewById(R.id.stateNamesEdit)).getText().toString();
-                // Adds epsilon to the alphabet
-                String symbols = "ϵ " + ((EditText) findViewById(R.id.symbolsEdit)).getText().toString();
-                String startState = ((EditText) findViewById(R.id.startStateEdit)).getText().toString();
-                String finalStates = ((EditText) findViewById(R.id.finalStatesEdit)).getText().toString();
-                if(states.equals("") | symbols.equals("") | startState.equals("") | finalStates.equals("")){
-                    Toast.makeText(getApplicationContext(), R.string.incompleteError,
-                            Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    String[] statesArr = states.split(" ");
-                    String[] symbolsArr = symbols.split(" ");
-                    NFA nfa = new NFA();
-                    nfa.setStates(statesArr);
-                    nfa.setSymbols(symbolsArr);
-                    nfa.setStartState(startState);
-                    nfa.setFinalStates(finalStates.split(" "));
-                    Intent transFuncActivity = TransFuncActivity.passArgsIntent(getApplicationContext(), transitions);
-                    startActivity(transFuncActivity);
-                }
-            }
-        });
+        StatesSymbolsFragment statesSymbolsFragment = new StatesSymbolsFragment();
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.mainLayout, statesSymbolsFragment, "statesSymbols");
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -80,5 +61,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStatesSymbolsInteraction(NFA nfa) {
+        this.nfa = nfa;
     }
 }
