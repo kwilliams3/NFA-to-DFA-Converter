@@ -12,6 +12,7 @@ public class DFA extends FiniteAutomaton implements Parcelable {
 
     public DFA() {}
 
+    @SuppressWarnings("unchecked")
     public DFA(Parcel dfaParcel) {
         this.setStates(dfaParcel.createStringArray());
         this.setSymbols(dfaParcel.createStringArray());
