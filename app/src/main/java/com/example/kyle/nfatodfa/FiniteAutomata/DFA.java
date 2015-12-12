@@ -13,11 +13,19 @@ public class DFA extends FiniteAutomaton implements Parcelable {
     public DFA() {}
 
     public DFA(Parcel dfaParcel) {
-        this.setStates(dfaParcel.readStringArray());
+        this.setStates(dfaParcel.createStringArray());
+        this.setSymbols(dfaParcel.createStringArray());
+        this.setStartState(dfaParcel.readString());
+        this.setFinalStates(dfaParcel.createStringArray());
+        this.setTransitionTable(dfaParcel.readHashMap(HashMap.class.getClassLoader()));
     }
 
     public HashMap<String, HashMap<String, String>> getTransitionTable() {
         return transitionTable;
+    }
+
+    private void setTransitionTable(HashMap<String, HashMap<String, String>> transitionTable) {
+        this.transitionTable = transitionTable;
     }
 
     private void setTransitionTable(String[] states, String[] symbols) {

@@ -11,6 +11,12 @@ import java.util.HashMap;
 public class NFA extends FiniteAutomaton implements Parcelable {
     private HashMap<String, HashMap<String, String[]>> transitionTable;
 
+    public NFA() {}
+
+    public NFA(NFA nfa) {
+
+    }
+
     public HashMap<String, HashMap<String, String[]>> getTransitionTable() {
         return transitionTable;
     }
@@ -88,4 +94,15 @@ public class NFA extends FiniteAutomaton implements Parcelable {
         super.writeToParcel(dest, flags);
         dest.writeMap(transitionTable);
     }
+
+    public static final Parcelable.Creator<NFA> CREATOR
+            = new Parcelable.Creator<NFA>() {
+        public NFA createFromParcel(Parcel nfaParcel) {
+            return new NFA(nfaParcel);
+        }
+
+        public NFA[] newArray(int size) {
+            return new NFA[size];
+        }
+    };
 }
