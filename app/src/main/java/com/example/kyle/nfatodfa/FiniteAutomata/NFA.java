@@ -1,11 +1,14 @@
 package com.example.kyle.nfatodfa.FiniteAutomata;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.HashMap;
 
 /**
  * Created by kyle on 12/9/15.
  */
-public class NFA extends FiniteAutomaton {
+public class NFA extends FiniteAutomaton implements Parcelable {
     private HashMap<String, HashMap<String, String[]>> transitionTable;
 
     public HashMap<String, HashMap<String, String[]>> getTransitionTable() {
@@ -73,5 +76,16 @@ public class NFA extends FiniteAutomaton {
         if (getStates() != null){
             setTransitionTable(getStates(), getSymbols());
         }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeMap(transitionTable);
     }
 }

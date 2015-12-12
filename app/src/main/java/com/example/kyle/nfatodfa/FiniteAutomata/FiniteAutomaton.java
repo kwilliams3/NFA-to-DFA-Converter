@@ -1,9 +1,12 @@
 package com.example.kyle.nfatodfa.FiniteAutomata;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by kyle on 12/9/15.
  */
-abstract class FiniteAutomaton {
+abstract class FiniteAutomaton implements Parcelable {
     private String[] states;
     private String[] symbols;
     private String startState;
@@ -39,5 +42,13 @@ abstract class FiniteAutomaton {
 
     public void setFinalStates(String[] finalStates) {
         this.finalStates = finalStates;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(states);
+        dest.writeStringArray(symbols);
+        dest.writeString(startState);
+        dest.writeStringArray(finalStates);
     }
 }
