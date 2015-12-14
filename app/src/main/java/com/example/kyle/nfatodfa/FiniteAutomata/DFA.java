@@ -8,7 +8,7 @@ import java.util.HashMap;
  * Created by kyle on 12/9/15.
  */
 public class DFA extends FiniteAutomaton implements Parcelable {
-    private DFATransition[] transitionTable;
+    private HashMap<String, HashMap<String, String>> transitionTable;
 
     public DFA() {}
 
@@ -21,19 +21,19 @@ public class DFA extends FiniteAutomaton implements Parcelable {
         setTransitionTable(dfaParcel.readHashMap(HashMap.class.getClassLoader()));
     }
 
-    private void setTransitionTable(DFATransition[] transitionTable) {
+    private void setTransitionTable(HashMap<String, HashMap<String, String>> transitionTable) {
         this.transitionTable = transitionTable;
     }
 
     private void setTransitionTable(String[] states, String[] symbols) {
-        DFATransition[] transitionTable =
-                new DFATransition[states.length * symbols.length];
+        HashMap<String, HashMap<String, String>> transitionTable =
+                new HashMap<>((states.length * symbols.length));
         // Filling transitionTable
-        int indexCounter = 0;
         for (String state : states) {
             for (String symbol: symbols) {
-                transitionTable[indexCounter] = new DFATransition(state, symbol);
-                indexCounter++;
+                HashMap<String, String> secondDimension = new HashMap<>();
+                secondDimension.put(symbol,null);
+                transitionTable.put(state, secondDimension);
             }
         }
         this.transitionTable = transitionTable;
