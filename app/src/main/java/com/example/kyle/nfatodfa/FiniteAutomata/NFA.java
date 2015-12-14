@@ -2,7 +2,6 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import java.util.HashMap;
 
 /**
@@ -13,12 +12,17 @@ public class NFA extends FiniteAutomaton implements Parcelable {
 
     public NFA() {}
 
-    public NFA(NFA nfa) {
-
+    @SuppressWarnings("unchecked")
+    public NFA(Parcel nfaParcel) {
+        setStates(nfaParcel.createStringArray());
+        setSymbols(nfaParcel.createStringArray());
+        setStartState(nfaParcel.readString());
+        setFinalStates(nfaParcel.createStringArray());
+        setTransitionTable(nfaParcel.readHashMap(HashMap.class.getClassLoader()));
     }
 
-    public HashMap<String, HashMap<String, String[]>> getTransitionTable() {
-        return transitionTable;
+    private void setTransitionTable(HashMap<String, HashMap<String, String[]>> transitionTable) {
+        this.transitionTable = transitionTable;
     }
 
     private void setTransitionTable(String[] states, String[] symbols) {

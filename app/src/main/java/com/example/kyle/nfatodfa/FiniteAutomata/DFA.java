@@ -8,36 +8,32 @@ import java.util.HashMap;
  * Created by kyle on 12/9/15.
  */
 public class DFA extends FiniteAutomaton implements Parcelable {
-    private HashMap<String, HashMap<String, String>> transitionTable;
+    private DFATransition[] transitionTable;
 
     public DFA() {}
 
     @SuppressWarnings("unchecked")
     public DFA(Parcel dfaParcel) {
-        this.setStates(dfaParcel.createStringArray());
-        this.setSymbols(dfaParcel.createStringArray());
-        this.setStartState(dfaParcel.readString());
-        this.setFinalStates(dfaParcel.createStringArray());
-        this.setTransitionTable(dfaParcel.readHashMap(HashMap.class.getClassLoader()));
+        setStates(dfaParcel.createStringArray());
+        setSymbols(dfaParcel.createStringArray());
+        setStartState(dfaParcel.readString());
+        setFinalStates(dfaParcel.createStringArray());
+        setTransitionTable(dfaParcel.readHashMap(HashMap.class.getClassLoader()));
     }
 
-    public HashMap<String, HashMap<String, String>> getTransitionTable() {
-        return transitionTable;
-    }
-
-    private void setTransitionTable(HashMap<String, HashMap<String, String>> transitionTable) {
+    private void setTransitionTable(DFATransition[] transitionTable) {
         this.transitionTable = transitionTable;
     }
 
     private void setTransitionTable(String[] states, String[] symbols) {
-        HashMap<String, HashMap<String, String>> transitionTable =
-                new HashMap<>((states.length * symbols.length));
+        DFATransition[] transitionTable =
+                new DFATransition[states.length * symbols.length];
         // Filling transitionTable
+        int indexCounter = 0;
         for (String state : states) {
             for (String symbol: symbols) {
-                HashMap<String, String> secondDimension = new HashMap<>();
-                secondDimension.put(symbol,null);
-                transitionTable.put(state, secondDimension);
+                transitionTable[indexCounter] = new DFATransition(state, symbol);
+                indexCounter++;
             }
         }
         this.transitionTable = transitionTable;

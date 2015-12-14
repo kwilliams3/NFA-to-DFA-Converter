@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.example.kyle.nfatodfa.FiniteAutomata.Transition;
 import com.example.kyle.nfatodfa.TransFuncRecyclerView.TransitionsAdapter;
 
 public class TransFuncActivity extends FragmentActivity {

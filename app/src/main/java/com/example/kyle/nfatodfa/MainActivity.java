@@ -2,29 +2,12 @@ package com.example.kyle.nfatodfa;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.kyle.nfatodfa.FiniteAutomata.NFA;
-
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements StatesSymbolsFragment.statesSymbolsInteractionListener{
 
@@ -34,7 +17,7 @@ public class MainActivity extends AppCompatActivity implements StatesSymbolsFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        StatesSymbolsFragment statesSymbolsFragment = new StatesSymbolsFragment();
+        StatesSymbolsFragment statesSymbolsFragment = StatesSymbolsFragment.newInstance();
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.mainLayout, statesSymbolsFragment, "statesSymbols");

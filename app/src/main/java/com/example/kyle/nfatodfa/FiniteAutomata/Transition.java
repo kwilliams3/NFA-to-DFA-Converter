@@ -1,12 +1,14 @@
-package com.example.kyle.nfatodfa;
+package com.example.kyle.nfatodfa.FiniteAutomata;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by kyle on 12/8/15.
  */
-public class Transition {
-    private String fromState;
-    private String symbol;
-    private String toState = null;
+abstract class Transition implements Parcelable {
+    protected String fromState;
+    protected String symbol;
 
     public String getFromState() {
         return fromState;
@@ -14,14 +16,6 @@ public class Transition {
 
     public void setFromState(String fromState) {
         this.fromState = fromState;
-    }
-
-    public String getToState() {
-        return toState;
-    }
-
-    public void setToState(String toState) {
-        this.toState = toState;
     }
 
     public String getSymbol() {
@@ -37,8 +31,11 @@ public class Transition {
                 symbol + ") \u2192";
     }
 
-    public String getFullTransitionString(){
-        return "\uD835\uDEFF(" + fromState + ", " +
-                symbol + ") \u2192 " + toState;
+    abstract public String getFullTransitionString();
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(fromState);
+        dest.writeString(symbol);
     }
 }
