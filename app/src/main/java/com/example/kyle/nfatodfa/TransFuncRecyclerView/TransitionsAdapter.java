@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.kyle.nfatodfa.FiniteAutomata.NFA;
 import com.example.kyle.nfatodfa.R;
+
+import java.util.HashMap;
 
 /**
  * Created by kyle on 12/5/15.
@@ -14,13 +17,14 @@ import com.example.kyle.nfatodfa.R;
 public class TransitionsAdapter extends RecyclerView.Adapter<TransitionViewHolder> {
 
     private LayoutInflater inflater;
+    private NFA nfa;
     private String[] transitions;
     public static String[] editTextData;
 
-    public TransitionsAdapter(Context context, String[] transitions){
+    public TransitionsAdapter(Context context, NFA nfa){
         inflater = LayoutInflater.from(context);
-        this.transitions = transitions;
-        TransitionsAdapter.editTextData = new String[transitions.length];
+        transitions = nfa.getTransitionsStringArrayPartial();
+        TransitionsAdapter.editTextData = new String[nfa.getNumberOfTransitions()];
     }
 
     @Override

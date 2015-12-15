@@ -1,20 +1,21 @@
 package com.example.kyle.nfatodfa;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.kyle.nfatodfa.FiniteAutomata.NFA;
 
-public class MainActivity extends AppCompatActivity implements StatesSymbolsFragment.statesSymbolsInteractionListener{
+public class MainActivity extends Activity implements
+        StatesSymbolsFragment.OnStatesSymbolsInteractionListener, TransFuncFragment.OnTransFuncInteractionListener{
 
     private NFA nfa;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         StatesSymbolsFragment statesSymbolsFragment = StatesSymbolsFragment.newInstance();
@@ -49,5 +50,16 @@ public class MainActivity extends AppCompatActivity implements StatesSymbolsFrag
     @Override
     public void onStatesSymbolsInteraction(NFA nfa) {
         this.nfa = nfa;
+        TransFuncFragment transFuncFragment = TransFuncFragment.newInstance(this.nfa);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainLayout, transFuncFragment, "transFunc");
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction() {
+
     }
 }

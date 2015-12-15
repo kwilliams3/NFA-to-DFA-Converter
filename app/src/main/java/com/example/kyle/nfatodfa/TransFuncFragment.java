@@ -4,17 +4,20 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kyle.nfatodfa.FiniteAutomata.NFA;
+import com.example.kyle.nfatodfa.TransFuncRecyclerView.TransitionsAdapter;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TransFuncFragment.OnFragmentInteractionListener} interface
+ * {@link OnTransFuncInteractionListener} interface
  * to handle interaction events.
  * Use the {@link TransFuncFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -23,8 +26,8 @@ public class TransFuncFragment extends Fragment {
 
     // the fragment initialization parameter
     private static final String ARG_NFA = "NFA";
-    private String mParam1;
-    private OnFragmentInteractionListener mListener;
+    private NFA nfa;
+    private OnTransFuncInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -33,11 +36,10 @@ public class TransFuncFragment extends Fragment {
      * @param nfa Parameter 1.
      * @return A new instance of fragment TransFuncFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static TransFuncFragment newInstance(NFA nfa) {
         TransFuncFragment fragment = new TransFuncFragment();
         Bundle args = new Bundle();
-        args.put(ARG_NFA, nfa);
+        args.putParcelable(ARG_NFA, nfa);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,7 +52,7 @@ public class TransFuncFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_NFA);
+            nfa = getArguments().getParcelable(ARG_NFA);
         }
     }
 
@@ -58,13 +60,22 @@ public class TransFuncFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_transitions, container, false);
+        return inflater.inflate(R.layout.fragment_trans_func, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    @Override
+    public void onActivityCreated(Bundle savedInstance) {
+        super.onActivityCreated(savedInstance);
+        Activity activity = getActivity();
+        RecyclerView recyclerView = (RecyclerView) activity.findViewById(R.id.transRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplication()));
+        RecyclerView.Adapter adapter = new TransitionsAdapter(activity.getApplication(), nfa);
+        recyclerView.setAdapter(adapter);
+    }
+
+    public void onButtonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction();
         }
     }
 
@@ -72,10 +83,10 @@ public class TransFuncFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnTransFuncInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnTransFuncInteractionListener");
         }
     }
 
@@ -95,9 +106,9 @@ public class TransFuncFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnTransFuncInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onFragmentInteraction();
     }
 
 }

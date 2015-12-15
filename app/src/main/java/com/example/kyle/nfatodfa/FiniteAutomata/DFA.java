@@ -2,6 +2,8 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -9,6 +11,7 @@ import java.util.HashMap;
  */
 public class DFA extends FiniteAutomaton implements Parcelable {
     private HashMap<String, HashMap<String, String>> transitionTable;
+    private String[] transitionsStringArrayPartial;
 
     public DFA() {}
 
@@ -25,17 +28,25 @@ public class DFA extends FiniteAutomaton implements Parcelable {
         this.transitionTable = transitionTable;
     }
 
-    private void setTransitionTable(String[] states, String[] symbols) {
+    /**
+     * Fills the transitionTable and transitionsStringPartial all
+     *  at once in order to keep the runtime no longer than O(n^2)
+     * @param states
+     * @param symbols
+     */
+    private void setTransitionTableAndTransitionsStringPartial(String[] states, String[] symbols) {
         HashMap<String, HashMap<String, String>> transitionTable =
                 new HashMap<>((states.length * symbols.length));
-        // Filling transitionTable
+        ArrayList<String> transitionsArrayList = new ArrayList<>();
         for (String state : states) {
             for (String symbol: symbols) {
                 HashMap<String, String> secondDimension = new HashMap<>();
                 secondDimension.put(symbol,null);
                 transitionTable.put(state, secondDimension);
+                transitionsArrayList.add(getTransitionStringPartial(state, symbol));
             }
         }
+        transitionsStringArrayPartial = transitionsArrayList.toArray(new String[transitionsArrayList.size()]);
         this.transitionTable = transitionTable;
     }
 
@@ -49,39 +60,25 @@ public class DFA extends FiniteAutomaton implements Parcelable {
         return (transitionTable.get(fromState)).get(symbol);
     }
 
-    /**
-     * Returns a string that states all or part of a transition from the automaton
-     * @param fromState string representing a state from the automaton's finite set of states
-     * @param symbol string representing a symbol from the automaton's alphabet
-     * @return string stating a transition, includes the resulting state only if any such state is known
-     */
-    public String getTransitionString(String fromState, String symbol) {
-        String transitionString;
-        String toState = getResultingState(fromState, symbol);
-
-        if (toState == null) {
-            transitionString = "\uD835\uDEFF(" + fromState + ", " + symbol + ") \u2192";
-        } else {
-            transitionString = "\uD835\uDEFF(" + fromState + ", " + symbol + ") \u2192" + toState;
-        }
-
-        return transitionString;
-    }
-
     @Override
     public void setStates(String[] states){
         super.setStates(states);
-        if (getSymbols() != null){
-            setTransitionTable(getStates(), getSymbols());
+        if (getStates() != null && getSymbols() != null){
+            setTransitionTableAndTransitionsStringPartial(getStates(), getSymbols());
         }
     }
 
     @Override
     public void setSymbols(String[] symbols){
         super.setSymbols(symbols);
-        if (getStates() != null){
-            setTransitionTable(getStates(), getSymbols());
+        if (getStates() != null && getSymbols() != null){
+            setTransitionTableAndTransitionsStringPartial(getStates(), getSymbols());
         }
+    }
+
+    @Override
+    public String[] getTransitionsStringArrayPartial() {
+        return transitionsStringArrayPartial;
     }
 
     @Override

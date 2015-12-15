@@ -1,7 +1,6 @@
 package com.example.kyle.nfatodfa;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,14 +16,14 @@ import com.example.kyle.nfatodfa.FiniteAutomata.NFA;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link statesSymbolsInteractionListener} interface
+ * {@link OnStatesSymbolsInteractionListener} interface
  * to handle interaction events.
  * Use the {@link StatesSymbolsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class StatesSymbolsFragment extends Fragment {
     private NFA nfa;
-    private statesSymbolsInteractionListener mListener;
+    private OnStatesSymbolsInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -44,16 +43,22 @@ public class StatesSymbolsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_states_symbols, container, false);
-        Button nextButton = (Button) view.findViewById(R.id.nextButton);
+        return inflater.inflate(R.layout.fragment_states_symbols, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstance){
+        super.onActivityCreated(savedInstance);
+        final Activity activity = getActivity();
+        Button nextButton = (Button) activity.findViewById(R.id.nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String states = ((EditText) view.findViewById(R.id.stateNamesEdit)).getText().toString();
-                // Adds epsilon to the alphabet
-                String symbols = "ϵ " + ((EditText) view.findViewById(R.id.symbolsEdit)).getText().toString();
-                String startState = ((EditText) view.findViewById(R.id.startStateEdit)).getText().toString();
-                String finalStates = ((EditText) view.findViewById(R.id.finalStatesEdit)).getText().toString();
+                String states = ((EditText) activity.findViewById(R.id.stateNamesEdit)).getText().toString();
+                // Adds the empty symbol to the alphabet
+                String symbols = "ϵ " + ((EditText) activity.findViewById(R.id.symbolsEdit)).getText().toString();
+                String startState = ((EditText) activity.findViewById(R.id.startStateEdit)).getText().toString();
+                String finalStates = ((EditText) activity.findViewById(R.id.finalStatesEdit)).getText().toString();
                 if (states.equals("") | symbols.equals("") | startState.equals("") | finalStates.equals("")) {
                     Toast.makeText(getActivity().getApplicationContext(), R.string.incompleteError,
                             Toast.LENGTH_SHORT).show();
@@ -69,12 +74,6 @@ public class StatesSymbolsFragment extends Fragment {
                 }
             }
         });
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstance){
-        super.onActivityCreated(savedInstance);
     }
 
     public void onNextButtonClick(NFA nfa) {
@@ -87,10 +86,10 @@ public class StatesSymbolsFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (statesSymbolsInteractionListener) activity;
+            mListener = (OnStatesSymbolsInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement statesSymbolsInteractionListener");
+                    + " must implement OnStatesSymbolsInteractionListener");
         }
     }
 
@@ -110,7 +109,7 @@ public class StatesSymbolsFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface statesSymbolsInteractionListener {
+    public interface OnStatesSymbolsInteractionListener {
         void onStatesSymbolsInteraction(NFA nfa);
     }
 

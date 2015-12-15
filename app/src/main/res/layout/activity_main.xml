@@ -3,7 +3,7 @@
     tools:context=".MainActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:id="@+id/mainLayout"
     android:background="@color/background">
 
