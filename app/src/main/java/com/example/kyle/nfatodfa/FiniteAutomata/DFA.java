@@ -11,7 +11,7 @@ import java.util.HashMap;
  */
 public class DFA extends FiniteAutomaton implements Parcelable {
     private HashMap<String, HashMap<String, String>> transitionTable;
-    private String[] transitionsStringArrayPartial;
+    private ArrayList<DFATransition> dfaTransitions;
 
     public DFA() {}
 
@@ -36,17 +36,16 @@ public class DFA extends FiniteAutomaton implements Parcelable {
      */
     private void setTransitionTableAndTransitionsStringPartial(String[] states, String[] symbols) {
         HashMap<String, HashMap<String, String>> transitionTable =
-                new HashMap<>((states.length * symbols.length));
-        ArrayList<String> transitionsArrayList = new ArrayList<>();
+                new HashMap<>(states.length * symbols.length);
+        dfaTransitions = new ArrayList<>();
         for (String state : states) {
             for (String symbol: symbols) {
                 HashMap<String, String> secondDimension = new HashMap<>();
                 secondDimension.put(symbol,null);
                 transitionTable.put(state, secondDimension);
-                transitionsArrayList.add(getTransitionStringPartial(state, symbol));
+                dfaTransitions.add(new DFATransition(state, symbol));
             }
         }
-        transitionsStringArrayPartial = transitionsArrayList.toArray(new String[transitionsArrayList.size()]);
         this.transitionTable = transitionTable;
     }
 
@@ -56,8 +55,12 @@ public class DFA extends FiniteAutomaton implements Parcelable {
      * @param symbol string representing a symbol from the automaton's alphabet
      * @return the resulting state that is reached after processing the transition
      */
-    public String getResultingState(String fromState, String symbol) {
+    public String getResultingStateFromTransitionTable(String fromState, String symbol) {
         return (transitionTable.get(fromState)).get(symbol);
+    }
+
+    public void setResultingStateFromTransitionTable(String fromState, String symbol, String toState){
+        transitionTable.get(fromState).put(symbol, toState);
     }
 
     @Override
@@ -76,9 +79,12 @@ public class DFA extends FiniteAutomaton implements Parcelable {
         }
     }
 
-    @Override
-    public String[] getTransitionsStringArrayPartial() {
-        return transitionsStringArrayPartial;
+    public ArrayList<DFATransition> getDFATransitions() {
+        return dfaTransitions;
+    }
+
+    public void setDfaTransitions(ArrayList<DFATransition> dfaTransitions) {
+        this.dfaTransitions = dfaTransitions;
     }
 
     @Override

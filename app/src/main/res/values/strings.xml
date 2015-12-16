@@ -6,7 +6,8 @@
     <string name="startState">Enter starting state name</string>
     <string name="finalStates">Enter final state names separated by a space</string>
     <string name="next">Next</string>
-    <string name="transFuncInstructs">Enter the states, separated by a space, that each transition leads to</string>
+    <string name="transFuncInstructs">Enter the states, separated by a space, which each transition leads to.
+    If a transition does not lead to any state, leave it blank.</string>
     <string name="convert">Convert</string>
     <string name="titleActivityTransFunc">TransFuncActivity</string>
     <string name="incompleteError">Please complete all fields</string>

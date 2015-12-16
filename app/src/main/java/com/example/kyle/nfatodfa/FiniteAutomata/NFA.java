@@ -2,17 +2,16 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by kyle on 12/9/15.
  */
 public class NFA extends FiniteAutomaton implements Parcelable {
     private HashMap<String, HashMap<String, String[]>> transitionTable;
-    private String[] transitionsStringArrayPartial;
+    private ArrayList<NFATransition> nfaTransitions;
 
     public NFA() {}
 
@@ -37,17 +36,16 @@ public class NFA extends FiniteAutomaton implements Parcelable {
      */
     private void setTransitionTableAndTransitionsStringPartial(String[] states, String[] symbols) {
         HashMap<String, HashMap<String, String[]>> transitionTable =
-                new HashMap<>((states.length * symbols.length));
-        ArrayList<String> transitionsArrayList = new ArrayList<>();
+                new HashMap<>(states.length * symbols.length);
+        nfaTransitions = new ArrayList<NFATransition>();
         for (String state : states) {
             for (String symbol: symbols) {
                 HashMap<String, String[]> secondDimension = new HashMap<>();
                 secondDimension.put(symbol,null);
                 transitionTable.put(state, secondDimension);
-                transitionsArrayList.add(getTransitionStringPartial(state, symbol));
+                nfaTransitions.add(new NFATransition(state, symbol));
             }
         }
-        transitionsStringArrayPartial = transitionsArrayList.toArray(new String[transitionsArrayList.size()]);
         this.transitionTable = transitionTable;
     }
 
@@ -57,8 +55,12 @@ public class NFA extends FiniteAutomaton implements Parcelable {
      * @param symbol string representing a symbol from the automaton's alphabet
      * @return array containing resulting states that can be reached after processing the transition
      */
-    public String[] getResultingStates(String fromState, String symbol) {
+    public String[] getResultingStatesFromTransitionTable(String fromState, String symbol) {
         return (transitionTable.get(fromState)).get(symbol);
+    }
+
+    public void setResultingStatesFromTransitionTable(String fromState, String symbol, String[] toStates){
+        transitionTable.get(fromState).put(symbol, toStates);
     }
 
     @Override
@@ -77,9 +79,12 @@ public class NFA extends FiniteAutomaton implements Parcelable {
         }
     }
 
-    @Override
-    public String[] getTransitionsStringArrayPartial() {
-        return transitionsStringArrayPartial;
+    public ArrayList<NFATransition> getNFATransitions() {
+        return nfaTransitions;
+    }
+
+    public void setNfaTransitions(ArrayList<NFATransition> nfaTransitions) {
+        this.nfaTransitions = nfaTransitions;
     }
 
     @Override

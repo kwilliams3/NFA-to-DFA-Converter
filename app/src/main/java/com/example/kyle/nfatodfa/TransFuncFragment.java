@@ -1,7 +1,6 @@
 package com.example.kyle.nfatodfa;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,9 +8,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.kyle.nfatodfa.FiniteAutomata.NFA;
+import com.example.kyle.nfatodfa.FiniteAutomata.NFATransition;
 import com.example.kyle.nfatodfa.TransFuncRecyclerView.TransitionsAdapter;
+
+import java.util.ArrayList;
 
 
 /**
@@ -71,6 +75,26 @@ public class TransFuncFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplication()));
         RecyclerView.Adapter adapter = new TransitionsAdapter(activity.getApplication(), nfa);
         recyclerView.setAdapter(adapter);
+        Button convertButton = (Button) activity.findViewById(R.id.convert);
+        convertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<NFATransition> nfaTransitions = nfa.getNFATransitions();
+                String[] toStates = TransitionsAdapter.getEditTextData();
+                for(int i=0; i<toStates.length; i++){
+                    String[] nfaToStates = toStates[i].split("\\s+");
+                    NFATransition transition = nfaTransitions.get(i);
+                    transition.setToStates(nfaToStates);
+                    nfa.setResultingStatesFromTransitionTable(transition.getFromState(),
+                            transition.getSymbol(), transition.getToStates());
+                }
+                nfa.setNfaTransitions(nfaTransitions);
+                for(NFATransition transition : nfaTransitions){
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            transition.getTransitionStringFull(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public void onButtonPressed() {

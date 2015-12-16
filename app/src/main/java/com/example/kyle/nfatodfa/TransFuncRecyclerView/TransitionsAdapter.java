@@ -7,9 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kyle.nfatodfa.FiniteAutomata.NFA;
+import com.example.kyle.nfatodfa.FiniteAutomata.NFATransition;
 import com.example.kyle.nfatodfa.R;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 /**
  * Created by kyle on 12/5/15.
@@ -18,12 +19,12 @@ public class TransitionsAdapter extends RecyclerView.Adapter<TransitionViewHolde
 
     private LayoutInflater inflater;
     private NFA nfa;
-    private String[] transitions;
+    private ArrayList<NFATransition> nfaTransitions;
     public static String[] editTextData;
 
     public TransitionsAdapter(Context context, NFA nfa){
         inflater = LayoutInflater.from(context);
-        transitions = nfa.getTransitionsStringArrayPartial();
+        nfaTransitions = nfa.getNFATransitions();
         TransitionsAdapter.editTextData = new String[nfa.getNumberOfTransitions()];
     }
 
@@ -35,7 +36,7 @@ public class TransitionsAdapter extends RecyclerView.Adapter<TransitionViewHolde
 
     @Override
     public void onBindViewHolder(TransitionViewHolder holder, int position) {
-        holder.textView.setText(transitions[position]);
+        holder.textView.setText(nfaTransitions.get(position).getTransitionStringPartial());
         holder.updateTextWatcherPosition(position);
         holder.editText.setText(editTextData[position]);
     }
@@ -43,5 +44,9 @@ public class TransitionsAdapter extends RecyclerView.Adapter<TransitionViewHolde
     @Override
     public int getItemCount() {
         return editTextData.length;
+    }
+
+    public static String[] getEditTextData() {
+        return editTextData;
     }
 }

@@ -44,18 +44,11 @@ abstract class FiniteAutomaton implements Parcelable {
         this.finalStates = finalStates;
     }
 
-    String getTransitionStringPartial(String fromState, String symbol){
-        return "\uD835\uDEFF(" + fromState + ", " +
-                symbol + ") \u2192";
-    }
-
     public int getNumberOfTransitions() {
         if (states != null && symbols != null) {
             return (states.length * symbols.length);
         } else {return 0;}
     }
-
-    public abstract String[] getTransitionsStringArrayPartial();
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {

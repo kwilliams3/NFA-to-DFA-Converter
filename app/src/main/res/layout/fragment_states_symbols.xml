@@ -68,7 +68,7 @@
         <Button
             style="@style/advanceButton"
             android:text="@string/next"
-            android:id="@+id/nextButton"
+            android:id="@+id/convert"
             android:layout_below="@+id/finalStatesEdit"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"/>

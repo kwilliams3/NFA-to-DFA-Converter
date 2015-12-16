@@ -50,7 +50,7 @@ public class StatesSymbolsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstance){
         super.onActivityCreated(savedInstance);
         final Activity activity = getActivity();
-        Button nextButton = (Button) activity.findViewById(R.id.nextButton);
+        Button nextButton = (Button) activity.findViewById(R.id.convert);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
