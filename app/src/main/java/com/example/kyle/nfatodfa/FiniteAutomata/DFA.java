@@ -23,7 +23,7 @@ public class DFA extends FiniteAutomaton implements Parcelable {
     public DFA(Parcel dfaParcel) {
         setStates(readStates(dfaParcel));
         setSymbols(dfaParcel.createStringArray());
-        setStartState(dfaParcel.createStringArray());
+        setStartStateFromParcel(dfaParcel.createStringArray());
         setFinalStates(dfaParcel.createStringArray());
         setTransitionTable(dfaParcel.readHashMap(HashMap.class.getClassLoader()));
     }
@@ -54,6 +54,10 @@ public class DFA extends FiniteAutomaton implements Parcelable {
         dfaStartState[0] = nfa.getStartState();
         System.arraycopy(allExceptNFAStartState, 0, dfaStartState, 1, allExceptNFAStartState.length);
         this.startState = dfaStartState;
+    }
+
+    private void setStartStateFromParcel(String[] startState){
+        this.startState = startState;
     }
 
     public String[] getFinalStates() {
