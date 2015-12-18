@@ -10,6 +10,10 @@ import java.util.HashMap;
  * Created by kyle on 12/9/15.
  */
 public class NFA extends FiniteAutomaton implements Parcelable {
+
+    private String[] states;
+    private String startState;
+    private String[] finalStates;
     private HashMap<String, HashMap<String, String[]>> transitionTable;
     private ArrayList<NFATransition> nfaTransitions;
 
@@ -24,6 +28,37 @@ public class NFA extends FiniteAutomaton implements Parcelable {
         setTransitionTable(nfaParcel.readHashMap(HashMap.class.getClassLoader()));
     }
 
+    public void setStates(String[] states){
+        this.states = states;
+        if (this.states != null && getSymbols() != null){
+            setTransitionTableAndTransitions(this.states, getSymbols());
+        }
+    }
+
+    @Override
+    public void setSymbols(String[] symbols){
+        super.setSymbols(symbols);
+        if (states != null && getSymbols() != null){
+            setTransitionTableAndTransitions(states, getSymbols());
+        }
+    }
+
+    public String getStartState() {
+        return startState;
+    }
+
+    public void setStartState(String startState) {
+        this.startState = startState;
+    }
+
+    public String[] getFinalStates() {
+        return finalStates;
+    }
+
+    public void setFinalStates(String[] finalStates) {
+        this.finalStates = finalStates;
+    }
+
     private void setTransitionTable(HashMap<String, HashMap<String, String[]>> transitionTable) {
         this.transitionTable = transitionTable;
     }
@@ -34,7 +69,7 @@ public class NFA extends FiniteAutomaton implements Parcelable {
      * @param states string array of states in the nfa
      * @param symbols string array of symbols in the nfa
      */
-    private void setTransitionTableAndTransitionsStringPartial(String[] states, String[] symbols) {
+    private void setTransitionTableAndTransitions(String[] states, String[] symbols) {
         HashMap<String, HashMap<String, String[]>> transitionTable =
                 new HashMap<>(states.length * symbols.length);
         nfaTransitions = new ArrayList<NFATransition>();
@@ -63,28 +98,18 @@ public class NFA extends FiniteAutomaton implements Parcelable {
         transitionTable.get(fromState).put(symbol, toStates);
     }
 
-    @Override
-    public void setStates(String[] states){
-        super.setStates(states);
-        if (getStates() != null && getSymbols() != null){
-            setTransitionTableAndTransitionsStringPartial(getStates(), getSymbols());
-        }
-    }
-
-    @Override
-    public void setSymbols(String[] symbols){
-        super.setSymbols(symbols);
-        if (getStates() != null && getSymbols() != null){
-            setTransitionTableAndTransitionsStringPartial(getStates(), getSymbols());
-        }
-    }
-
     public ArrayList<NFATransition> getNFATransitions() {
         return nfaTransitions;
     }
 
     public void setNfaTransitions(ArrayList<NFATransition> nfaTransitions) {
         this.nfaTransitions = nfaTransitions;
+    }
+
+    public int getNumberOfTransitions() {
+        if (states != null && getSymbols() != null) {
+            return (states.length * getSymbols().length);
+        } else {return 0;}
     }
 
     @Override
@@ -94,7 +119,10 @@ public class NFA extends FiniteAutomaton implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(states);
         super.writeToParcel(dest, flags);
+        dest.writeString(startState);
+        dest.writeStringArray(finalStates);
         dest.writeMap(transitionTable);
     }
 

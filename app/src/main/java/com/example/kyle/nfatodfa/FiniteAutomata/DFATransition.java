@@ -3,24 +3,54 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
 /**
  * Created by kyle on 12/16/15.
  */
-public class DFATransition extends  Transition{
-    private String toState;
+class DFATransition extends  Transition{
+    private String[] fromState;
+    private String[] toState;
 
-    public DFATransition(String fromState, String symbol){
+    DFATransition(String[] fromState, String symbol){
         setFromState(fromState);
         setSymbol(symbol);
     }
 
-    public String getToState() {
+    String[] getFromState() {
+        return fromState;
+    }
+
+    String getFromStateAsString(){
+        String fromStateString = "";
+        for (String state : fromState){
+            fromStateString = fromStateString.concat(state + " ");
+        }
+        return fromStateString.trim();
+    }
+
+    String[] getToState() {
         return toState;
     }
 
-    public void setToState(String toState) {
+    String getToStateAsString(){
+        String toStateString = "";
+        for (String state : toState){
+            toStateString = toStateString.concat(state + " ");
+        }
+        return toStateString.trim();
+    }
+
+    void setToState(String[] toState) {
         this.toState = toState;
     }
 
-    public String getTransitionStringFull(){
-        return "\uD835\uDEFF(" + getFromState() + ", " +
-                getSymbol() + ") \u2192" + toState;
+    void setFromState(String[] fromState) {
+        this.fromState = fromState;
+    }
+
+    String getTransitionStringPartial(){
+        return "\uD835\uDEFF(" + getFromStateAsString() + ", " +
+                getSymbol() + ") \u2192";
+    }
+
+    String getTransitionStringFull(){
+        return "\uD835\uDEFF(" + getFromStateAsString() + ", " +
+                getSymbol() + ") \u2192" + getToStateAsString();
     }
 }
