@@ -6,11 +6,11 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
 abstract class Transition {
     private String symbol;
 
-    public String getSymbol() {
+    String getSymbol() {
         return symbol;
     }
 
-    public void setSymbol(String symbol) {
+    void setSymbol(String symbol) {
         this.symbol = symbol;
     }
 }
