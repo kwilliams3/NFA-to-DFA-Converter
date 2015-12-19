@@ -2,20 +2,20 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Created by kyle on 12/9/15.
  */
 public class NFA extends FiniteAutomaton implements Parcelable {
 
-    private ArrayList<String> states;
+    private Set<String> states;
     private String startState;
-    private ArrayList<String> finalStates;
-    private HashMap<String, HashMap<String, ArrayList<String>>> transitionTable;
-    private ArrayList<NFATransition> nfaTransitions;
+    private Set<String> finalStates;
+    private HashMap<String, HashMap<String, Set<String>>> transitionTable;
+    private Set<NFATransition> nfaTransitions;
 
     public NFA() {}
 
@@ -28,11 +28,11 @@ public class NFA extends FiniteAutomaton implements Parcelable {
         setTransitionTable(nfaParcel.readHashMap(HashMap.class.getClassLoader()));
     }
 
-    public ArrayList<String> getStates() {
+    public Set<String> getStates() {
         return states;
     }
 
-    public void setStates(ArrayList<String> states){
+    public void setStates(Set<String> states){
         this.states = states;
         if (this.states != null && getSymbols() != null){
             setTransitionTableAndTransitions(this.states, getSymbols());
@@ -40,7 +40,7 @@ public class NFA extends FiniteAutomaton implements Parcelable {
     }
 
     @Override
-    public void setSymbols(ArrayList<String> symbols){
+    public void setSymbols(Set<String> symbols){
         super.setSymbols(symbols);
         if (states != null && getSymbols() != null){
             setTransitionTableAndTransitions(states, getSymbols());
@@ -55,31 +55,31 @@ public class NFA extends FiniteAutomaton implements Parcelable {
         this.startState = startState;
     }
 
-    public ArrayList<String> getFinalStates() {
+    public Set<String> getFinalStates() {
         return finalStates;
     }
 
-    public void setFinalStates(ArrayList<String> finalStates) {
+    public void setFinalStates(Set<String> finalStates) {
         this.finalStates = finalStates;
     }
 
-    private void setTransitionTable(HashMap<String, HashMap<String, ArrayList<String>>> transitionTable) {
+    private void setTransitionTable(HashMap<String, HashMap<String, Set<String>>> transitionTable) {
         this.transitionTable = transitionTable;
     }
 
     /**
-     * Fills the transitionTable and transitionsStringPartial all
+     * Constucts the NFA transition table and NFA transitions all
      *  at once in order to keep the runtime no longer than O(n^2)
      * @param states string array of states in the nfa
      * @param symbols string array of symbols in the nfa
      */
-    private void setTransitionTableAndTransitions(ArrayList<String> states, ArrayList<String> symbols) {
-        HashMap<String, HashMap<String, ArrayList<String>>> transitionTable =
+    private void setTransitionTableAndTransitions(Set<String> states, Set<String> symbols) {
+        HashMap<String, HashMap<String, Set<String>>> transitionTable =
                 new HashMap<>(states.size() * symbols.size());
-        nfaTransitions = new ArrayList<NFATransition>();
+        nfaTransitions = new LinkedHashSet<>();
         for (String state : states) {
             for (String symbol: symbols) {
-                HashMap<String, ArrayList<String>> secondDimension = new HashMap<>();
+                HashMap<String, Set<String>> secondDimension = new HashMap<>();
                 secondDimension.put(symbol,null);
                 transitionTable.put(state, secondDimension);
                 nfaTransitions.add(new NFATransition(state, symbol));
@@ -94,19 +94,19 @@ public class NFA extends FiniteAutomaton implements Parcelable {
      * @param symbol string representing a symbol from the automaton's alphabet
      * @return array containing resulting states that can be reached after processing the transition
      */
-    public ArrayList<String> getResultingStatesInTransitionTable(String fromState, String symbol) {
+    public Set<String> getResultingStatesInTransitionTable(String fromState, String symbol) {
         return (transitionTable.get(fromState)).get(symbol);
     }
 
-    public void setResultingStatesInTransitionTable(String fromState, String symbol, ArrayList<String> toStates){
+    public void setResultingStatesInTransitionTable(String fromState, String symbol, Set<String> toStates){
         transitionTable.get(fromState).put(symbol, toStates);
     }
 
-    public ArrayList<NFATransition> getNFATransitions() {
+    public Set<NFATransition> getNFATransitions() {
         return nfaTransitions;
     }
 
-    public void setNfaTransitions(ArrayList<NFATransition> nfaTransitions) {
+    public void setNfaTransitions(Set<NFATransition> nfaTransitions) {
         this.nfaTransitions = nfaTransitions;
     }
 

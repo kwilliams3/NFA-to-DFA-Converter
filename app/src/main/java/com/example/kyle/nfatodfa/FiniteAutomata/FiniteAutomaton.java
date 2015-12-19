@@ -3,7 +3,7 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * This class isn't really necessary, but I've implemented it for organizational purposes. All
@@ -11,18 +11,18 @@ import java.util.ArrayList;
  * Created by kyle on 12/9/15.
  */
 abstract class FiniteAutomaton implements Parcelable {
-    private ArrayList<String> symbols;
+    private Set<String> symbols;
 
-    public ArrayList<String> getSymbols() {
+    public Set<String> getSymbols() {
         return symbols;
     }
 
-    public void setSymbols(ArrayList<String> symbols) {
+    public void setSymbols(Set<String> symbols) {
         this.symbols = symbols;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringList(symbols);
+        dest.write(symbols);
     }
 }

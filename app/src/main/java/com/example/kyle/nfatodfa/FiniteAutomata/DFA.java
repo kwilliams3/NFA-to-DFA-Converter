@@ -3,19 +3,20 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
 import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Created by kyle on 12/9/15.
  */
 public class DFA extends FiniteAutomaton implements Parcelable {
 
-    private ArrayList<ArrayList<String>> states;
-    private ArrayList<String> startState;
-    private ArrayList<String> finalStates;
-    private HashMap<ArrayList<String>, HashMap<String, ArrayList<String>>> transitionTable;
-    private ArrayList<DFATransition> dfaTransitions;
+    private Set<Set<String>> states;
+    private Set<String> startState;
+    private Set<String> finalStates;
+    private HashMap<Set<String>, HashMap<String, Set<String>>> transitionTable;
+    private Set<DFATransition> dfaTransitions;
 
     public DFA() {}
 
@@ -28,11 +29,11 @@ public class DFA extends FiniteAutomaton implements Parcelable {
         setTransitionTable(dfaParcel.readHashMap(HashMap.class.getClassLoader()));
     }
 
-    public ArrayList<ArrayList<String>> getStates() {
+    public Set<Set<String>> getStates() {
         return states;
     }
 
-    private void setStates(ArrayList<ArrayList<String>> states){
+    private void setStates(Set<Set<String>> states){
         this.states = states;
         if (this.states != null && getSymbols() != null){
             setTransitionTableAndTransitions(this.states, getSymbols());
@@ -54,15 +55,16 @@ public class DFA extends FiniteAutomaton implements Parcelable {
      * @param nfaSymbols takes the NFA symbols array, removes epsilon from the array, and sets
      *                   it as the DFA symbols array
      */
-    public void setSymbols(ArrayList<String> nfaSymbols){
-        ArrayList<String> dfaSymbols = new ArrayList<>(nfaSymbols.subList(1, nfaSymbols.size()-1));
+    public void setSymbols(Set<String> nfaSymbols){
+        nfaSymbols.remove("ϵ");
+        Set<String> dfaSymbols = new LinkedHashSet<>(nfaSymbols);
         super.setSymbols(dfaSymbols);
         if (states != null && getSymbols() != null){
             setTransitionTableAndTransitions(states, getSymbols());
         }
     }
 
-    public ArrayList<String> getStartState() {
+    public Set<String> getStartState() {
         return startState;
     }
 
@@ -71,41 +73,41 @@ public class DFA extends FiniteAutomaton implements Parcelable {
      * @param nfa the NFA which is being converted
      */
     public void setStartState(NFA nfa) {
-        ArrayList<String> dfaStartState = new ArrayList<>();
+        Set<String> dfaStartState = new LinkedHashSet<>();
         dfaStartState.add(nfa.getStartState());
         dfaStartState.addAll(nfa.getResultingStatesInTransitionTable(nfa.getStartState(), "ϵ"));
         this.startState = dfaStartState;
     }
 
-    private void setStartStateFromParcel(ArrayList<String> startState){
+    private void setStartStateFromParcel(Set<String> startState){
         this.startState = startState;
     }
 
-    public ArrayList<String> getFinalStates() {
+    public Set<String> getFinalStates() {
         return finalStates;
     }
 
-    public void setFinalStates(ArrayList<String> finalStates) {
+    public void setFinalStates(Set<String> finalStates) {
         this.finalStates = finalStates;
     }
 
-    private void setTransitionTable(HashMap<ArrayList<String>, HashMap<String, ArrayList<String>>> transitionTable) {
+    private void setTransitionTable(HashMap<Set<String>, HashMap<String, Set<String>>> transitionTable) {
         this.transitionTable = transitionTable;
     }
 
     /**
-     * Fills the transitionTable and dfaTransitions all
+     * Constucts the DFA transition table and DFA transitions all
      *  at once in order to keep the runtime no longer than O(n^2)
      * @param states string array of array of nfa states (DFA states are a set of states)
      * @param symbols string array of symbols in the dfa
      */
-    private void setTransitionTableAndTransitions(ArrayList<ArrayList<String>> states, ArrayList<String> symbols) {
-        HashMap<ArrayList<String>, HashMap<String, ArrayList<String>>> transitionTable =
+    private void setTransitionTableAndTransitions(Set<Set<String>> states, Set<String> symbols) {
+        HashMap<Set<String>, HashMap<String, Set<String>>> transitionTable =
                 new HashMap<>(states.size() * symbols.size());
-        dfaTransitions = new ArrayList<>();
-        for (ArrayList<String> state : states) {
+        dfaTransitions = new LinkedHashSet<>();
+        for (Set<String> state : states) {
             for (String symbol: symbols) {
-                HashMap<String, ArrayList<String>> secondDimension = new HashMap<>();
+                HashMap<String, Set<String>> secondDimension = new HashMap<>();
                 secondDimension.put(symbol,null);
                 transitionTable.put(state, secondDimension);
                 dfaTransitions.add(new DFATransition(state, symbol));
@@ -120,19 +122,19 @@ public class DFA extends FiniteAutomaton implements Parcelable {
      * @param symbol string representing a symbol from the automaton's alphabet
      * @return the resulting state that is reached after processing the transition
      */
-    public ArrayList<String> getResultingStateFromTransitionTable(ArrayList<String> fromState, String symbol) {
+    public Set<String> getResultingStateFromTransitionTable(ArrayList<String> fromState, String symbol) {
         return (transitionTable.get(fromState)).get(symbol);
     }
 
-    public void setResultingStateFromTransitionTable(ArrayList<String> fromState, String symbol, ArrayList<String> toState){
+    public void setResultingStateFromTransitionTable(ArrayList<String> fromState, String symbol, Set<String> toState){
         transitionTable.get(fromState).put(symbol, toState);
     }
 
-    public ArrayList<DFATransition> getDFATransitions() {
+    public Set<DFATransition> getDFATransitions() {
         return dfaTransitions;
     }
 
-    public void setDfaTransitions(ArrayList<DFATransition> dfaTransitions) {
+    public void setDfaTransitions(Set<DFATransition> dfaTransitions) {
         this.dfaTransitions = dfaTransitions;
     }
 
@@ -168,13 +170,13 @@ public class DFA extends FiniteAutomaton implements Parcelable {
     };
 
     private void writeStates(Parcel dest) {
-        for (ArrayList<String> state : states){
+        for (Set<String> state : states){
             dest.writeStringList(state);
         }
     }
 
-    private ArrayList<ArrayList<String>> readStates(Parcel parcel) {
-        ArrayList<ArrayList<String>> dfaStates = new ArrayList<>();
+    private Set<Set<String>> readStates(Parcel parcel) {
+        Set<Set<String>> dfaStates = new ArrayList<>();
         for (int i=0; i< dfaStates.size(); i++) {
             dfaStates.add(parcel.createStringArrayList());
         }
