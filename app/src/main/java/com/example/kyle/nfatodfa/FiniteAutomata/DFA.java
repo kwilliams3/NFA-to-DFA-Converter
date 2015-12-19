@@ -40,8 +40,12 @@ public class DFA extends FiniteAutomaton implements Parcelable {
     }
 
     public void setStatesAndFinalStates(NFA nfa) {
-        ArrayList<ArrayList<String>> dfaStates;
+        ArrayList<ArrayList<String>> dfaStates = new ArrayList<>();
         ArrayList<String> nfaStates = nfa.getStates();
+        ArrayList<String> nfaFinalStates = nfa.getFinalStates();
+        ArrayList<String> emptySet = new ArrayList<>();
+        emptySet.add("∅");
+        dfaStates.add(emptySet);
 
     }
 
