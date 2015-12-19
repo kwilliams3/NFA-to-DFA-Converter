@@ -1,22 +1,24 @@
 package com.example.kyle.nfatodfa.FiniteAutomata;
 
+import java.util.ArrayList;
+
 /**
  * Created by kyle on 12/16/15.
  */
 class DFATransition extends  Transition{
-    private String[] fromState;
-    private String[] toState;
+    private ArrayList<String> fromState;
+    private ArrayList<String> toState;
 
-    DFATransition(String[] fromState, String symbol){
+    DFATransition(ArrayList<String> fromState, String symbol){
         setFromState(fromState);
         setSymbol(symbol);
     }
 
-    String[] getFromState() {
+    ArrayList<String> getFromState() {
         return fromState;
     }
 
-    String getFromStateAsString(){
+    private String getFromStateAsString(){
         String fromStateString = "";
         for (String state : fromState){
             fromStateString = fromStateString.concat(state + " ");
@@ -24,11 +26,11 @@ class DFATransition extends  Transition{
         return fromStateString.trim();
     }
 
-    String[] getToState() {
+    ArrayList<String> getToState() {
         return toState;
     }
 
-    String getToStateAsString(){
+    private String getToStateAsString(){
         String toStateString = "";
         for (String state : toState){
             toStateString = toStateString.concat(state + " ");
@@ -36,11 +38,11 @@ class DFATransition extends  Transition{
         return toStateString.trim();
     }
 
-    void setToState(String[] toState) {
+    void setToState(ArrayList<String> toState) {
         this.toState = toState;
     }
 
-    void setFromState(String[] fromState) {
+    void setFromState(ArrayList<String> fromState) {
         this.fromState = fromState;
     }
 

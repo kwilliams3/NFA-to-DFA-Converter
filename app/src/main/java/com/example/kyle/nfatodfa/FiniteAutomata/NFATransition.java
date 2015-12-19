@@ -1,10 +1,12 @@
 package com.example.kyle.nfatodfa.FiniteAutomata;
 
+import java.util.ArrayList;
+
 /**
  * Created by kyle on 12/16/15.
  */
 class NFATransition extends  Transition{
-    private String[] toStates;
+    private ArrayList<String> toStates;
     private String fromState;
 
     NFATransition(String fromState, String symbol){
@@ -12,11 +14,11 @@ class NFATransition extends  Transition{
         setSymbol(symbol);
     }
 
-    String[] getToStates() {
+    ArrayList<String> getToStates() {
         return toStates;
     }
 
-    void setToStates(String[] toStates) {
+    void setToStates(ArrayList<String> toStates) {
         this.toStates = toStates;
     }
 

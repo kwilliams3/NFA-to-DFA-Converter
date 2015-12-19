@@ -85,7 +85,7 @@ public class TransFuncFragment extends Fragment {
                     String[] nfaToStates = toStates[i].split("\\s+");
                     NFATransition transition = nfaTransitions.get(i);
                     transition.setToStates(nfaToStates);
-                    nfa.setResultingStatesFromTransitionTable(transition.getFromState(),
+                    nfa.setResultingStatesInTransitionTable(transition.getFromState(),
                             transition.getSymbol(), transition.getToStates());
                 }
                 nfa.setNfaTransitions(nfaTransitions);
