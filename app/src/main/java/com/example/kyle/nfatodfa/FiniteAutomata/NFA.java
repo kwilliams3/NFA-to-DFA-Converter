@@ -2,6 +2,8 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -21,10 +23,10 @@ public class NFA extends FiniteAutomaton implements Parcelable {
 
     @SuppressWarnings("unchecked")
     public NFA(Parcel nfaParcel) {
-        setStates(nfaParcel.createStringArrayList());
-        setSymbols(nfaParcel.createStringArrayList());
+        setStates(new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray())));
+        setSymbols(new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray())));
         setStartState(nfaParcel.readString());
-        setFinalStates(nfaParcel.createStringArrayList());
+        setFinalStates(new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray())));
         setTransitionTable(nfaParcel.readHashMap(HashMap.class.getClassLoader()));
     }
 
@@ -123,10 +125,12 @@ public class NFA extends FiniteAutomaton implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringList(states);
+        String[] states = new String[this.states.size()];
+        String[] finalStates = new String[this.finalStates.size()];
+        dest.writeStringArray(this.states.toArray(states));
         super.writeToParcel(dest, flags);
         dest.writeString(startState);
-        dest.writeStringList(finalStates);
+        dest.writeStringArray(this.finalStates.toArray(finalStates));
         dest.writeMap(transitionTable);
     }
 

@@ -3,6 +3,7 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
 import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -23,9 +24,9 @@ public class DFA extends FiniteAutomaton implements Parcelable {
     @SuppressWarnings("unchecked")
     public DFA(Parcel dfaParcel) {
         setStates(readStates(dfaParcel));
-        setSymbols(dfaParcel.createStringArrayList());
-        setStartStateFromParcel(dfaParcel.createStringArrayList());
-        setFinalStates(dfaParcel.createStringArrayList());
+        setSymbols(new LinkedHashSet<>(Arrays.asList(dfaParcel.createStringArray())));
+        setStartStateFromParcel(new LinkedHashSet<>(Arrays.asList(dfaParcel.createStringArray())));
+        setFinalStates(new LinkedHashSet<>(Arrays.asList(dfaParcel.createStringArray())));
         setTransitionTable(dfaParcel.readHashMap(HashMap.class.getClassLoader()));
     }
 
@@ -41,10 +42,10 @@ public class DFA extends FiniteAutomaton implements Parcelable {
     }
 
     public void setStatesAndFinalStates(NFA nfa) {
-        ArrayList<ArrayList<String>> dfaStates = new ArrayList<>();
-        ArrayList<String> nfaStates = nfa.getStates();
-        ArrayList<String> nfaFinalStates = nfa.getFinalStates();
-        ArrayList<String> emptySet = new ArrayList<>();
+        Set<Set<String>> dfaStates = new LinkedHashSet<>();
+        Set<String> nfaStates = nfa.getStates();
+        Set<String> nfaFinalStates = nfa.getFinalStates();
+        Set<String> emptySet = new LinkedHashSet<>();
         emptySet.add("∅");
         dfaStates.add(emptySet);
 
@@ -151,10 +152,12 @@ public class DFA extends FiniteAutomaton implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        String[] startState = new String[this.startState.size()];
+        String[] finalStates = new String[this.finalStates.size()];
         writeStates(dest);
         super.writeToParcel(dest, flags);
-        dest.writeStringList(startState);
-        dest.writeStringList(finalStates);
+        dest.writeStringArray(this.startState.toArray(startState));
+        dest.writeStringArray(this.finalStates.toArray(finalStates));
         dest.writeMap(transitionTable);
     }
 
@@ -171,14 +174,15 @@ public class DFA extends FiniteAutomaton implements Parcelable {
 
     private void writeStates(Parcel dest) {
         for (Set<String> state : states){
-            dest.writeStringList(state);
+            String[] states = new String[state.size()];
+            dest.writeStringArray(state.toArray(states));
         }
     }
 
     private Set<Set<String>> readStates(Parcel parcel) {
-        Set<Set<String>> dfaStates = new ArrayList<>();
+        Set<Set<String>> dfaStates = new LinkedHashSet<>();
         for (int i=0; i< dfaStates.size(); i++) {
-            dfaStates.add(parcel.createStringArrayList());
+            dfaStates.add(new LinkedHashSet<>(Arrays.asList(parcel.createStringArray())));
         }
         return dfaStates;
     }

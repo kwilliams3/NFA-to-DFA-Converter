@@ -23,6 +23,7 @@ abstract class FiniteAutomaton implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.write(symbols);
+        String[] symbols = new String[this.symbols.size()];
+        dest.writeStringArray(this.symbols.toArray(symbols));
     }
 }
