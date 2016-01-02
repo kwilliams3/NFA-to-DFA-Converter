@@ -54,22 +54,22 @@
 
         <TextView
             style="@style/mainActivityTextView"
-            android:text="@string/finalStates"
-            android:id="@+id/finalStatesText"
-            android:labelFor="@+id/finalStatesEdit"
+            android:text="@string/acceptStates"
+            android:id="@+id/acceptStatesText"
+            android:labelFor="@+id/acceptStatesEdit"
             android:layout_below="@+id/startStateEdit"
             android:layout_marginTop="40dp" />
 
         <EditText
             style="@style/mainActivityEditText"
-            android:id="@+id/finalStatesEdit"
-            android:layout_below="@+id/finalStatesText" />
+            android:id="@+id/acceptStatesEdit"
+            android:layout_below="@+id/acceptStatesText" />
 
         <Button
             style="@style/advanceButton"
             android:text="@string/next"
             android:id="@+id/convert"
-            android:layout_below="@+id/finalStatesEdit"
+            android:layout_below="@+id/acceptStatesEdit"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"/>
     </RelativeLayout>

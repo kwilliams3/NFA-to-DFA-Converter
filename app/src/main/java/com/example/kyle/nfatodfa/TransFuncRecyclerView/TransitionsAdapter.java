@@ -24,7 +24,7 @@ public class TransitionsAdapter extends RecyclerView.Adapter<TransitionViewHolde
 
     public TransitionsAdapter(Context context, NFA nfa){
         inflater = LayoutInflater.from(context);
-        nfaTransitions = nfa.getNFATransitions();
+        nfaTransitions = new ArrayList<>(nfa.getNFATransitions());
         TransitionsAdapter.editTextData = new String[nfa.getNumberOfTransitions()];
     }
 

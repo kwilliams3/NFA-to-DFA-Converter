@@ -58,8 +58,8 @@ public class StatesSymbolsFragment extends Fragment {
                 // Adds the empty symbol to the alphabet
                 String symbols = "ϵ " + ((EditText) activity.findViewById(R.id.symbolsEdit)).getText().toString();
                 String startState = ((EditText) activity.findViewById(R.id.startStateEdit)).getText().toString();
-                String finalStates = ((EditText) activity.findViewById(R.id.finalStatesEdit)).getText().toString();
-                if (states.equals("") | symbols.equals("") | startState.equals("") | finalStates.equals("")) {
+                String acceptStates = ((EditText) activity.findViewById(R.id.acceptStatesEdit)).getText().toString();
+                if (states.equals("") | symbols.equals("") | startState.equals("") | acceptStates.equals("")) {
                     Toast.makeText(getActivity().getApplicationContext(), R.string.incompleteError,
                             Toast.LENGTH_SHORT).show();
                 } else {
@@ -69,7 +69,7 @@ public class StatesSymbolsFragment extends Fragment {
                     nfa.setStates(statesArr);
                     nfa.setSymbols(symbolsArr);
                     nfa.setStartState(startState);
-                    nfa.setFinalStates(finalStates.split(" "));
+                    nfa.setAcceptStates(acceptStates.split(" "));
                     onNextButtonClick(nfa);
                 }
             }
@@ -104,10 +104,6 @@ public class StatesSymbolsFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnStatesSymbolsInteractionListener {
         void onStatesSymbolsInteraction(NFA nfa);

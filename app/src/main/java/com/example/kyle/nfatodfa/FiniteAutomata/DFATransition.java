@@ -5,16 +5,16 @@ import java.util.Set;
 /**
  * Created by kyle on 12/16/15.
  */
-class DFATransition extends  Transition{
+public class DFATransition extends  Transition{
     private Set<String> fromState;
     private Set<String> toState;
 
-    DFATransition(Set<String> fromState, String symbol){
+    public DFATransition(Set<String> fromState, String symbol){
         setFromState(fromState);
         setSymbol(symbol);
     }
 
-    Set<String> getFromState() {
+    public Set<String> getFromState() {
         return fromState;
     }
 
@@ -26,7 +26,7 @@ class DFATransition extends  Transition{
         return fromStateString.trim();
     }
 
-    Set<String> getToState() {
+    public Set<String> getToState() {
         return toState;
     }
 
@@ -38,20 +38,20 @@ class DFATransition extends  Transition{
         return toStateString.trim();
     }
 
-    void setToState(Set<String> toState) {
+    public void setToState(Set<String> toState) {
         this.toState = toState;
     }
 
-    void setFromState(Set<String> fromState) {
+    public void setFromState(Set<String> fromState) {
         this.fromState = fromState;
     }
 
-    String getTransitionStringPartial(){
+    public String getTransitionStringPartial(){
         return "\uD835\uDEFF(" + getFromStateAsString() + ", " +
                 getSymbol() + ") \u2192";
     }
 
-    String getTransitionStringFull(){
+    public String getTransitionStringFull(){
         return "\uD835\uDEFF(" + getFromStateAsString() + ", " +
                 getSymbol() + ") \u2192" + getToStateAsString();
     }

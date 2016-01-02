@@ -6,12 +6,14 @@ import java.util.Set;
 
 /**
  * Created by kyle on 1/2/16.
+ * Todo:
  */
 class NFAConverter {
 
     // Used to keep track of whether a DFA state is a finish state or not
     private boolean isAFinishState = false;
     private NFA nfa;
+    private DFA dfa = new DFA();
 
     NFAConverter(NFA nfaToBeConverted){
         nfa = nfaToBeConverted;
@@ -22,20 +24,47 @@ class NFAConverter {
      * @return a DFA which accepts only the language that the given NFA accepts
      */
     DFA convert() {
-        DFA resultingDFA = new DFA();
-        resultingDFA.setSymbols(nfa.getSymbols());
-        Set<String> startStateSet = new LinkedHashSet<>();
-        startStateSet.add(nfa.getStartState());
-        resultingDFA.setStartState(takeEpsilonClosure(startStateSet));
+        dfa.setSymbols(nfa.getSymbols());
+        Set<String> nfaStartStateAsSet = new LinkedHashSet<>();
+        nfaStartStateAsSet.add(nfa.getStartState());
+        dfa.setStartState(takeEpsilonClosure(nfaStartStateAsSet));
 
-        // Set final states will be done in the foreach part of the do while loop and in the
-        // eclosure function
-        boolean isAFinishingState = false;
+        LinkedList<Set<String>> dfaStatesToBeMappedOut = new LinkedList<>();
+        dfaStatesToBeMappedOut.push(dfa.getStartState());
         do {
+            Set<String> currentDFAState = dfaStatesToBeMappedOut.pop();
+            for (String symbol : dfa.getSymbols()) {
+                Set<String> newDFAState = new LinkedHashSet<>();
+                for (String element : currentDFAState) {
+                    Set<String> partOfNewDFAState = new LinkedHashSet<>();
+                    partOfNewDFAState.addAll(nfa.getResultingStatesInTransitionTable(element, symbol));
+                    if (!partOfNewDFAState.isEmpty()) {
+                        newDFAState.addAll(takeEpsilonClosure(partOfNewDFAState));
+                    }
+                }
+                Set<Set<String>> dfaStates = dfa.getStates();
+                if (newDFAState.isEmpty()){
+                    newDFAState = null;
+                }
+                else if(!dfaStates.contains(newDFAState)){
+                    // Eureka! We found a new DFA state!
+                    dfaStatesToBeMappedOut.push(newDFAState);
+                    dfaStates.add(newDFAState);
+                    dfa.setStates(dfaStates);
+                    if(isAFinishState){
+                        Set<Set<String>> dfaAcceptStates = dfa.getAcceptStates();
+                        dfaAcceptStates.add(newDFAState);
+                        dfa.setAcceptStates(dfaAcceptStates);
+                        // Reset the variable
+                        isAFinishState = false;
+                    }
+                }
+                dfa.setResultingStateInTransitionTable(currentDFAState, symbol, newDFAState);
+            }
 
-        } while (true);
+        } while (!dfaStatesToBeMappedOut.isEmpty());
 
-        return resultingDFA;
+        return dfa;
     }
 
     /**
@@ -46,7 +75,7 @@ class NFAConverter {
      * @return the resulting set after taking the epsilon closure of partOfDFAState
      */
     private Set<String> takeEpsilonClosure(Set<String> partOfDFAState) {
-        Set<String> eClosureOfDFAState = new LinkedHashSet<>();
+        Set<String> eClosureOfPartialDFAState = new LinkedHashSet<>();
         // The epsilon closure could lead to many different states, and those states
         // could circle back around. It is important that we keep track of which NFA states
         // have been checked for e-transitions and which ones have not been checked yet. This
@@ -66,13 +95,17 @@ class NFAConverter {
         for (String state : partOfDFAState) {
             toBeChecked.add(state);
             checkedStates.add(state);
-            eClosureOfDFAState.add(state);
+            eClosureOfPartialDFAState.add(state);
         }
 
         while(!toBeChecked.isEmpty()) {
             String currentState = toBeChecked.pop();
+            Set<String> nfaAcceptStates = nfa.getAcceptStates();
+            if(nfaAcceptStates.contains(currentState)){
+                isAFinishState = true;
+            }
             Set<String> epsilonStates = nfa.getResultingStatesInTransitionTable(currentState, "ϵ");
-            eClosureOfDFAState.addAll(epsilonStates);
+            eClosureOfPartialDFAState.addAll(epsilonStates);
             checkedStates.add(currentState);
             //toBeChecked should not contain already checked states.
             //Remove any states that have already been checked.
@@ -84,7 +117,7 @@ class NFAConverter {
             toBeChecked.addAll(epsilonStates);
         }
 
-        partOfDFAState.addAll(eClosureOfDFAState);
+        partOfDFAState.addAll(eClosureOfPartialDFAState);
         return partOfDFAState;
     }
 }

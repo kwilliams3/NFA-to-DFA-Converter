@@ -5,20 +5,20 @@ import java.util.Set;
 /**
  * Created by kyle on 12/16/15.
  */
-class NFATransition extends  Transition{
+public class NFATransition extends  Transition{
     private Set<String> toStates;
     private String fromState;
 
-    NFATransition(String fromState, String symbol){
+    public NFATransition(String fromState, String symbol){
         setFromState(fromState);
         setSymbol(symbol);
     }
 
-    Set<String> getToStates() {
+    public Set<String> getToStates() {
         return toStates;
     }
 
-    void setToStates(Set<String> toStates) {
+    public void setToStates(Set<String> toStates) {
         this.toStates = toStates;
     }
 
@@ -30,20 +30,20 @@ class NFATransition extends  Transition{
         return states.trim();
     }
 
-    String getFromState() {
+    public String getFromState() {
         return fromState;
     }
 
-    void setFromState(String fromState) {
+    public void setFromState(String fromState) {
         this.fromState = fromState;
     }
 
-    String getTransitionStringPartial(){
+    public String getTransitionStringPartial(){
         return "\uD835\uDEFF(" + fromState + ", " +
                 getSymbol() + ") \u2192";
     }
 
-    String getTransitionStringFull(){
+    public String getTransitionStringFull(){
         return "\uD835\uDEFF(" + getFromState() + ", " +
                 getSymbol() + ") \u2192" + getToStatesAsString();
     }

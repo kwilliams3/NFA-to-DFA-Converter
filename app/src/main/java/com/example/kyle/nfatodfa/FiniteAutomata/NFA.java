@@ -6,8 +6,6 @@ import android.os.Parcelable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -18,7 +16,7 @@ public class NFA extends FiniteAutomaton implements Parcelable {
 
     private Set<String> states;
     private String startState;
-    private Set<String> finalStates;
+    private Set<String> acceptStates;
     private HashMap<String, HashMap<String, Set<String>>> transitionTable;
     // nfaTransitions is used solely for a visual display to the user of the NFA transitions.
     // The variable is not actually used in any computations.
@@ -31,7 +29,7 @@ public class NFA extends FiniteAutomaton implements Parcelable {
         setStates(new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray())));
         setSymbols(new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray())));
         setStartState(nfaParcel.readString());
-        setFinalStates(new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray())));
+        setAcceptStates(new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray())));
         setTransitionTable(nfaParcel.readHashMap(HashMap.class.getClassLoader()));
     }
 
@@ -62,12 +60,12 @@ public class NFA extends FiniteAutomaton implements Parcelable {
         this.startState = startState;
     }
 
-    public Set<String> getFinalStates() {
-        return finalStates;
+    public Set<String> getAcceptStates() {
+        return acceptStates;
     }
 
-    public void setFinalStates(Set<String> finalStates) {
-        this.finalStates = finalStates;
+    public void setAcceptStates(Set<String> acceptStates) {
+        this.acceptStates = acceptStates;
     }
 
     private void setTransitionTable(HashMap<String, HashMap<String, Set<String>>> transitionTable) {
@@ -136,11 +134,11 @@ public class NFA extends FiniteAutomaton implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         String[] states = new String[this.states.size()];
-        String[] finalStates = new String[this.finalStates.size()];
+        String[] acceptStates = new String[this.acceptStates.size()];
         dest.writeStringArray(this.states.toArray(states));
         super.writeToParcel(dest, flags);
         dest.writeString(startState);
-        dest.writeStringArray(this.finalStates.toArray(finalStates));
+        dest.writeStringArray(this.acceptStates.toArray(acceptStates));
         dest.writeMap(transitionTable);
     }
 

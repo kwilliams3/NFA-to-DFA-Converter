@@ -33,7 +33,7 @@ class TransitionViewHolder extends RecyclerView.ViewHolder {
 
     /**
      * Used to keep track of the text a user enters into an EditText within the RecyclerView
-     *  so that the text can be recalled even after the EditText is reused for different View
+     * so that the text can be recalled even after the EditText is reused for different View
      * Credit for this idea goes to "dkarmazi" for his answer on StackOverflow
      */
     private class MyCustomEditTextListener implements TextWatcher {
