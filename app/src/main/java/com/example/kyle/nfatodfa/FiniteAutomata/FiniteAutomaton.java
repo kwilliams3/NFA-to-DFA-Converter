@@ -6,8 +6,8 @@ import android.os.Parcelable;
 import java.util.Set;
 
 /**
- * This class isn't really necessary, but I've implemented it for organizational purposes. All
- *     NFAs and DFAs are finite automata, and I wanted to keep that hierarchy in my code.
+ * This class isn't truly necessary, but I've implemented it for organizational purposes.
+ * All NFAs and DFAs are finite automata, and I wanted to keep that hierarchy in my code.
  * Created by kyle on 12/9/15.
  */
 abstract class FiniteAutomaton implements Parcelable {
@@ -17,7 +17,7 @@ abstract class FiniteAutomaton implements Parcelable {
         return symbols;
     }
 
-    public void setSymbols(Set<String> symbols) {
+    void setSymbols(Set<String> symbols) {
         this.symbols = symbols;
     }
 

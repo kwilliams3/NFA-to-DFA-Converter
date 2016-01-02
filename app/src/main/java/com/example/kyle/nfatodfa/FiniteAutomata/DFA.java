@@ -11,12 +11,14 @@ import java.util.Set;
 /**
  * Created by kyle on 12/9/15.
  */
-public class DFA extends FiniteAutomaton implements Parcelable {
+class DFA extends FiniteAutomaton implements Parcelable {
 
     private Set<Set<String>> states;
     private Set<String> startState;
     private Set<String> finalStates;
     private HashMap<Set<String>, HashMap<String, Set<String>>> transitionTable;
+    // dfaTransitions is used solely for a visual display to the user of the DFA transitions.
+    // The variable is not actually used in any computations.
     private Set<DFATransition> dfaTransitions;
 
     public DFA() {}
@@ -34,21 +36,11 @@ public class DFA extends FiniteAutomaton implements Parcelable {
         return states;
     }
 
-    private void setStates(Set<Set<String>> states){
+    void setStates(Set<Set<String>> states){
         this.states = states;
         if (this.states != null && getSymbols() != null){
             setTransitionTableAndTransitions(this.states, getSymbols());
         }
-    }
-
-    public void setStatesAndFinalStates(NFA nfa) {
-        Set<Set<String>> dfaStates = new LinkedHashSet<>();
-        Set<String> nfaStates = nfa.getStates();
-        Set<String> nfaFinalStates = nfa.getFinalStates();
-        Set<String> emptySet = new LinkedHashSet<>();
-        emptySet.add("∅");
-        dfaStates.add(emptySet);
-
     }
 
     /**
@@ -56,7 +48,8 @@ public class DFA extends FiniteAutomaton implements Parcelable {
      * @param nfaSymbols takes the NFA symbols array, removes epsilon from the array, and sets
      *                   it as the DFA symbols array
      */
-    public void setSymbols(Set<String> nfaSymbols){
+    @Override
+    void setSymbols(Set<String> nfaSymbols){
         nfaSymbols.remove("ϵ");
         Set<String> dfaSymbols = new LinkedHashSet<>(nfaSymbols);
         super.setSymbols(dfaSymbols);
@@ -69,15 +62,8 @@ public class DFA extends FiniteAutomaton implements Parcelable {
         return startState;
     }
 
-    /**
-     * Sets the DFA start state to the epsilon closure of the NFA start state
-     * @param nfa the NFA which is being converted
-     */
-    public void setStartState(NFA nfa) {
-        Set<String> dfaStartState = new LinkedHashSet<>();
-        dfaStartState.add(nfa.getStartState());
-        dfaStartState.addAll(nfa.getResultingStatesInTransitionTable(nfa.getStartState(), "ϵ"));
-        this.startState = dfaStartState;
+    void setStartState(Set<String> eClosureOfNFAStartState) {
+        this.startState = eClosureOfNFAStartState;
     }
 
     private void setStartStateFromParcel(Set<String> startState){
@@ -88,7 +74,7 @@ public class DFA extends FiniteAutomaton implements Parcelable {
         return finalStates;
     }
 
-    public void setFinalStates(Set<String> finalStates) {
+    void setFinalStates(Set<String> finalStates) {
         this.finalStates = finalStates;
     }
 
@@ -98,7 +84,7 @@ public class DFA extends FiniteAutomaton implements Parcelable {
 
     /**
      * Constucts the DFA transition table and DFA transitions all
-     *  at once in order to keep the runtime no longer than O(n^2)
+     *  at once in order to keep the complexity no larger than O(n^2)
      * @param states string array of array of nfa states (DFA states are a set of states)
      * @param symbols string array of symbols in the dfa
      */
@@ -109,7 +95,7 @@ public class DFA extends FiniteAutomaton implements Parcelable {
         for (Set<String> state : states) {
             for (String symbol: symbols) {
                 HashMap<String, Set<String>> secondDimension = new HashMap<>();
-                secondDimension.put(symbol,null);
+                secondDimension.put(symbol, null);
                 transitionTable.put(state, secondDimension);
                 dfaTransitions.add(new DFATransition(state, symbol));
             }
