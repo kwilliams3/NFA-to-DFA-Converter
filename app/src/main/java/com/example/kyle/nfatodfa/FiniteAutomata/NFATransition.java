@@ -22,11 +22,13 @@ public class NFATransition extends Transition{
     }
 
     private String getToStatesAsString(){
-        String states = "";
+        StringBuilder statesStringBuilder = new StringBuilder();
         for(String state : toStates){
-            states = states + " " + state;
+            statesStringBuilder.append(state);
+            statesStringBuilder.append(" ");
         }
-        return states.trim();
+        String statesString = statesStringBuilder.toString();
+        return statesString;
     }
 
     public String getTransitionStringFull(){
