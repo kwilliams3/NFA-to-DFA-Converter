@@ -10,94 +10,46 @@ import java.util.Set;
 
 /**
  * Created by kyle on 12/9/15.
+ * TODO: FINISH THE CONVERTER, needs to be changed due to DFA changes
  * TODO: Doc strings for everything necessary throughout all classes - to include doc stringing
  * TODO: the classes themselves (i.e. right here); flood the NFAConverter class' functions
  * TODO: with comments that explain what's going on and why; set things to "final" that should be final
  */
 class DFA extends FiniteAutomaton implements Parcelable {
 
-    private Set<Set<String>> states;
-    private Set<String> startState;
-    private Set<Set<String>> acceptStates;
-    private HashMap<Set<String>, HashMap<String, Set<String>>> transitionTable;
+    private HashMap<String, HashMap<String, String>> transitionTable;
     // dfaTransitions is used solely for a visual display to the user of the DFA transitions.
-    // The variable is not actually used in any computations.
+    // The field is not actually used in any computations. The reason is that at some points we will
+    // need to look up which state a transition will lead to. If we created a list of dfaTransition
+    // objects. Then, we would have to iterate through that list to find the transition we are
+    // looking for. Unfortunately, that would be a O(n) complexity. So, to save time, we use a
+    // HashMap instead which allows us to look up a transition in constant time - O(1).
     private Set<DFATransition> dfaTransitions;
 
     public DFA() {}
 
     @SuppressWarnings("unchecked")
     public DFA(Parcel dfaParcel) {
-        setStates(readStatesFrom(dfaParcel));
-        setSymbols(new LinkedHashSet<>(Arrays.asList(dfaParcel.createStringArray())));
-        setStartStateFromParcel(new LinkedHashSet<>(Arrays.asList(dfaParcel.createStringArray())));
-        setAcceptStates(readAcceptStatesFromParcel(dfaParcel));
-        setTransitionTable(dfaParcel.readHashMap(HashMap.class.getClassLoader()));
-    }
-
-    public Set<Set<String>> getStates() {
-        return states;
-    }
-
-    void setStates(Set<Set<String>> states){
-        this.states = states;
-        if (this.states != null && getSymbols() != null){
-            setTransitionTableAndTransitions(this.states, getSymbols());
-        }
+        states = new LinkedHashSet<>(Arrays.asList(dfaParcel.createStringArray()));
+        symbols = new LinkedHashSet<>(Arrays.asList(dfaParcel.createStringArray()));
+        startState = dfaParcel.readString();
+        acceptStates = new LinkedHashSet<>(Arrays.asList(dfaParcel.createStringArray()));
+        transitionTable = dfaParcel.readHashMap(HashMap.class.getClassLoader());
     }
 
     /**
-     * Sets the symbols
-     * @param nfaSymbols takes the NFA symbols array, removes epsilon from the array, and sets
-     *                   it as the DFA symbols array
-     */
-    @Override
-    void setSymbols(Set<String> nfaSymbols){
-        nfaSymbols.remove("ϵ");
-        Set<String> dfaSymbols = new LinkedHashSet<>(nfaSymbols);
-        super.setSymbols(dfaSymbols);
-        if (states != null && getSymbols() != null){
-            setTransitionTableAndTransitions(states, getSymbols());
-        }
-    }
-
-    public Set<String> getStartState() {
-        return startState;
-    }
-
-    void setStartState(Set<String> eClosureOfNFAStartState) {
-        this.startState = eClosureOfNFAStartState;
-    }
-
-    private void setStartStateFromParcel(Set<String> startState){
-        this.startState = startState;
-    }
-
-    public Set<Set<String>> getAcceptStates() {
-        return acceptStates;
-    }
-
-    void setAcceptStates(Set<Set<String>> acceptStates) {
-        this.acceptStates = acceptStates;
-    }
-
-    private void setTransitionTable(HashMap<Set<String>, HashMap<String, Set<String>>> transitionTable) {
-        this.transitionTable = transitionTable;
-    }
-
-    /**
-     * Constucts the DFA transition table and DFA transitions all
+     * Constructs the DFA transition table and DFA transitions all
      *  at once in order to keep the complexity no larger than O(n^2)
      * @param states string array of array of nfa states (DFA states are a set of states)
      * @param symbols string array of symbols in the dfa
      */
-    private void setTransitionTableAndTransitions(Set<Set<String>> states, Set<String> symbols) {
-        HashMap<Set<String>, HashMap<String, Set<String>>> transitionTable =
+    void setTransitionTableAndTransitions(Set<String> states, Set<String> symbols) {
+        HashMap<String, HashMap<String, String>> transitionTable =
                 new HashMap<>(states.size() * symbols.size());
         dfaTransitions = new LinkedHashSet<>();
-        for (Set<String> state : states) {
+        for (String state : states) {
             for (String symbol: symbols) {
-                HashMap<String, Set<String>> secondDimension = new HashMap<>();
+                HashMap<String, String> secondDimension = new HashMap<>();
                 secondDimension.put(symbol, null);
                 transitionTable.put(state, secondDimension);
                 dfaTransitions.add(new DFATransition(state, symbol));
@@ -109,14 +61,14 @@ class DFA extends FiniteAutomaton implements Parcelable {
     /**
      * Returns the resulting state that is reached after processing the transition
      * @param fromState string representing a state from the automaton's finite set of states
-     * @param symbol string representing a symbol from the automaton's alphabet
+     * @param symbol string representing a symbol from the automaton's finite set of symbols
      * @return the resulting state that is reached after processing the transition
      */
-    public Set<String> getResultingStateFromTransitionTable(Set<String> fromState, String symbol) {
+    public String getResultingStateFromTransitionTable(String fromState, String symbol) {
         return (transitionTable.get(fromState)).get(symbol);
     }
 
-    public void setResultingStateInTransitionTable(Set<String> fromState, String symbol, Set<String> toState){
+    public void setResultingStateInTransitionTable(String fromState, String symbol, String toState){
         transitionTable.get(fromState).put(symbol, toState);
     }
 
@@ -128,12 +80,6 @@ class DFA extends FiniteAutomaton implements Parcelable {
         this.dfaTransitions = dfaTransitions;
     }
 
-    public int getNumberOfTransitions() {
-        if (states != null && getSymbols() != null) {
-            return (states.size() * getSymbols().size());
-        } else {return 0;}
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -141,12 +87,7 @@ class DFA extends FiniteAutomaton implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        String[] startState = new String[this.startState.size()];
-        String[] acceptStates = new String[this.acceptStates.size()];
-        writeStatesToParcel(dest);
         super.writeToParcel(dest, flags);
-        dest.writeStringArray(this.startState.toArray(startState));
-        writeAcceptStatesToParcel(dest);
         dest.writeMap(transitionTable);
     }
 
@@ -160,34 +101,4 @@ class DFA extends FiniteAutomaton implements Parcelable {
             return new DFA[size];
         }
     };
-
-    private void writeStatesToParcel(Parcel parcel) {
-        for (Set<String> state : states){
-            String[] states = new String[state.size()];
-            parcel.writeStringArray(state.toArray(states));
-        }
-    }
-
-    private Set<Set<String>> readStatesFrom(Parcel parcel) {
-        Set<Set<String>> dfaStates = new LinkedHashSet<>();
-        for (int i=0; i< dfaStates.size(); i++) {
-            dfaStates.add(new LinkedHashSet<>(Arrays.asList(parcel.createStringArray())));
-        }
-        return dfaStates;
-    }
-
-    private void writeAcceptStatesToParcel(Parcel parcel) {
-        for (Set<String> acceptState : acceptStates){
-            String[] states = new String[acceptState.size()];
-            parcel.writeStringArray(acceptState.toArray(states));
-        }
-    }
-
-    private Set<Set<String>> readAcceptStatesFromParcel(Parcel parcel) {
-        Set<Set<String>> dfaAcceptStates = new LinkedHashSet<>();
-        for (int i=0; i< dfaAcceptStates.size(); i++) {
-            dfaAcceptStates.add(new LinkedHashSet<>(Arrays.asList(parcel.createStringArray())));
-        }
-        return dfaAcceptStates;
-    }
 }

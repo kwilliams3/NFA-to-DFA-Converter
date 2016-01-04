@@ -14,71 +14,34 @@ import java.util.Set;
  */
 public class NFA extends FiniteAutomaton implements Parcelable {
 
-    private Set<String> states;
-    private String startState;
-    private Set<String> acceptStates;
+
     private HashMap<String, HashMap<String, Set<String>>> transitionTable;
     // nfaTransitions is used solely for a visual display to the user of the NFA transitions.
-    // The variable is not actually used in any computations.
+    // The field is not actually used in any computations. The reason is that at some points we will
+    // need to look up which state a transition will lead to. If we created a list of nfaTransition
+    // objects. Then, we would have to iterate through that list to find the transition we are
+    // looking for. Unfortunately, that would be a O(n) complexity. So, to save time, we use a
+    // HashMap instead which allows us to look up a transition in constant time - O(1).
     private Set<NFATransition> nfaTransitions;
 
     public NFA() {}
 
     @SuppressWarnings("unchecked")
     public NFA(Parcel nfaParcel) {
-        setStates(new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray())));
-        setSymbols(new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray())));
-        setStartState(nfaParcel.readString());
-        setAcceptStates(new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray())));
-        setTransitionTable(nfaParcel.readHashMap(HashMap.class.getClassLoader()));
-    }
-
-    public Set<String> getStates() {
-        return states;
-    }
-
-    public void setStates(Set<String> states){
-        this.states = states;
-        if (this.states != null && getSymbols() != null){
-            setTransitionTableAndTransitions(this.states, getSymbols());
-        }
-    }
-
-    @Override
-    public void setSymbols(Set<String> symbols){
-        super.setSymbols(symbols);
-        if (states != null && getSymbols() != null){
-            setTransitionTableAndTransitions(states, getSymbols());
-        }
-    }
-
-    public String getStartState() {
-        return startState;
-    }
-
-    public void setStartState(String startState) {
-        this.startState = startState;
-    }
-
-    public Set<String> getAcceptStates() {
-        return acceptStates;
-    }
-
-    public void setAcceptStates(Set<String> acceptStates) {
-        this.acceptStates = acceptStates;
-    }
-
-    private void setTransitionTable(HashMap<String, HashMap<String, Set<String>>> transitionTable) {
-        this.transitionTable = transitionTable;
+        states = new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray()));
+        symbols = new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray()));
+        startState = nfaParcel.readString();
+        acceptStates = new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray()));
+        transitionTable = nfaParcel.readHashMap(HashMap.class.getClassLoader());
     }
 
     /**
-     * Constucts the NFA transition table and NFA transitions all
+     * Constructs the NFA transition table and NFA transitions all
      *  at once in order to keep the runtime no longer than O(n^2)
      * @param states string array of states in the nfa
      * @param symbols string array of symbols in the nfa
      */
-    private void setTransitionTableAndTransitions(Set<String> states, Set<String> symbols) {
+    void setTransitionTableAndTransitions(Set<String> states, Set<String> symbols) {
         HashMap<String, HashMap<String, Set<String>>> transitionTable =
                 new HashMap<>(states.size() * symbols.size());
         nfaTransitions = new LinkedHashSet<>();
@@ -100,7 +63,7 @@ public class NFA extends FiniteAutomaton implements Parcelable {
      * @return array containing resulting states that can be reached after processing the transition
      */
     public Set<String> getResultingStatesInTransitionTable(String fromState, String symbol) {
-        return (transitionTable.get(fromState)).get(symbol);
+        return transitionTable.get(fromState).get(symbol);
     }
 
     public void setResultingStatesInTransitionTable(String fromState, String symbol, Set<String> toStates){
@@ -115,17 +78,6 @@ public class NFA extends FiniteAutomaton implements Parcelable {
         this.nfaTransitions = nfaTransitions;
     }
 
-    public int getNumberOfTransitions() {
-        if (states != null && getSymbols() != null) {
-            return (states.size() * getSymbols().size());
-        } else {return 0;}
-    }
-
-    public DFA convertToDFA(){
-        NFAConverter converter = new NFAConverter(this);
-        return converter.convert();
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -133,12 +85,7 @@ public class NFA extends FiniteAutomaton implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        String[] states = new String[this.states.size()];
-        String[] acceptStates = new String[this.acceptStates.size()];
-        dest.writeStringArray(this.states.toArray(states));
         super.writeToParcel(dest, flags);
-        dest.writeString(startState);
-        dest.writeStringArray(this.acceptStates.toArray(acceptStates));
         dest.writeMap(transitionTable);
     }
 
