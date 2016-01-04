@@ -12,7 +12,7 @@ import java.util.Set;
  * Represents a non
  * Created by kyle on 12/9/15.
  */
-public class NFA extends FiniteAutomaton implements Parcelable {
+final public class NFA extends FiniteAutomaton implements Parcelable {
 
 
     private HashMap<String, HashMap<String, Set<String>>> transitionTable;
@@ -22,7 +22,7 @@ public class NFA extends FiniteAutomaton implements Parcelable {
     // objects. Then, we would have to iterate through that list to find the transition we are
     // looking for. Unfortunately, that would be a O(n) complexity. So, to save time, we use a
     // HashMap instead which allows us to look up a transition in constant time - O(1).
-    private Set<NFATransition> nfaTransitions;
+    private Set<NFATransition> nfaTransitions = new LinkedHashSet<>();;
 
     public NFA() {}
 
@@ -42,9 +42,7 @@ public class NFA extends FiniteAutomaton implements Parcelable {
      * @param symbols string array of symbols in the nfa
      */
     void setTransitionTableAndTransitions(Set<String> states, Set<String> symbols) {
-        HashMap<String, HashMap<String, Set<String>>> transitionTable =
-                new HashMap<>(states.size() * symbols.size());
-        nfaTransitions = new LinkedHashSet<>();
+        transitionTable = new HashMap<>(states.size() * symbols.size());
         for (String state : states) {
             for (String symbol: symbols) {
                 HashMap<String, Set<String>> secondDimension = new HashMap<>();
@@ -53,7 +51,6 @@ public class NFA extends FiniteAutomaton implements Parcelable {
                 nfaTransitions.add(new NFATransition(state, symbol));
             }
         }
-        this.transitionTable = transitionTable;
     }
 
     /**

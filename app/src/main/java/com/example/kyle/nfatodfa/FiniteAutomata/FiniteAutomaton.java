@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -13,10 +14,10 @@ import java.util.Set;
  */
 abstract class FiniteAutomaton implements Parcelable {
 
-    protected Set<String> states;
-    protected Set<String> symbols;
+    protected Set<String> states = new LinkedHashSet<>();
+    protected Set<String> symbols = new LinkedHashSet<>();
     protected String startState;
-    protected Set<String> acceptStates;
+    protected Set<String> acceptStates = new LinkedHashSet<>();
 
     public Set<String> getStates() {
         return states;

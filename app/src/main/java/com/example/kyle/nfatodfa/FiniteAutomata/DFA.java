@@ -15,7 +15,7 @@ import java.util.Set;
  * TODO: the classes themselves (i.e. right here); flood the NFAConverter class' functions
  * TODO: with comments that explain what's going on and why; set things to "final" that should be final
  */
-class DFA extends FiniteAutomaton implements Parcelable {
+final class DFA extends FiniteAutomaton implements Parcelable {
 
     private HashMap<String, HashMap<String, String>> transitionTable;
     // dfaTransitions is used solely for a visual display to the user of the DFA transitions.
@@ -24,7 +24,7 @@ class DFA extends FiniteAutomaton implements Parcelable {
     // objects. Then, we would have to iterate through that list to find the transition we are
     // looking for. Unfortunately, that would be a O(n) complexity. So, to save time, we use a
     // HashMap instead which allows us to look up a transition in constant time - O(1).
-    private Set<DFATransition> dfaTransitions;
+    private Set<DFATransition> dfaTransitions = new LinkedHashSet<>();
 
     public DFA() {}
 
@@ -44,9 +44,7 @@ class DFA extends FiniteAutomaton implements Parcelable {
      * @param symbols string array of symbols in the dfa
      */
     void setTransitionTableAndTransitions(Set<String> states, Set<String> symbols) {
-        HashMap<String, HashMap<String, String>> transitionTable =
-                new HashMap<>(states.size() * symbols.size());
-        dfaTransitions = new LinkedHashSet<>();
+        transitionTable = new HashMap<>(states.size() * symbols.size());
         for (String state : states) {
             for (String symbol: symbols) {
                 HashMap<String, String> secondDimension = new HashMap<>();
@@ -55,7 +53,6 @@ class DFA extends FiniteAutomaton implements Parcelable {
                 dfaTransitions.add(new DFATransition(state, symbol));
             }
         }
-        this.transitionTable = transitionTable;
     }
 
     /**

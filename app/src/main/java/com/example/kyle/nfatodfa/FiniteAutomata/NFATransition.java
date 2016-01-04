@@ -5,7 +5,7 @@ import java.util.Set;
 /**
  * Created by kyle on 12/16/15.
  */
-public class NFATransition extends Transition{
+final public class NFATransition extends Transition{
     private Set<String> toStates;
 
     public NFATransition(String fromState, String symbol){

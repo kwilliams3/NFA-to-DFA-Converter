@@ -3,7 +3,7 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
 /**
  * Created by kyle on 12/16/15.
  */
-public class DFATransition extends Transition{
+final public class DFATransition extends Transition{
     private String toState;
 
     public DFATransition(String fromState, String symbol){

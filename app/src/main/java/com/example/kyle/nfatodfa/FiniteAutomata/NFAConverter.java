@@ -7,73 +7,78 @@ import java.util.Set;
 /**
  * Created by kyle on 1/2/16.
  */
-class NFAConverter {
+final class NFAConverter {
 
     // Used to keep track of whether a DFA state is a finish state or not
     private boolean isAFinishState = false;
     private NFA nfa;
     private DFA dfa = new DFA();
     private Set<String> dfaStates = new LinkedHashSet<>();
-    private Set<String> dfaAcceptStates
-    private Set<Set<String>> unformattedDFAStates = new LinkedHashSet<>();
-
-    NFAConverter(NFA nfaToBeConverted){
-        nfa = nfaToBeConverted;
-    }
+    private MyStringBuilder newStateBuilder = new MyStringBuilder();
+    private MyStringBuilder currentStateBuilder = new MyStringBuilder();
+    private String newState;
+    private String currentState;
 
     /**
      * Converts an NFA to an equivalent DFA
      * @return a DFA which accepts only the language that the given NFA accepts
      */
-    DFA convert() {
+    DFA convert(NFA nfaToBeConverted) {
+        nfa = nfaToBeConverted;
         Set<String> dfaSymbols = nfa.symbols;
         dfaSymbols.remove("ϵ");
         dfa.symbols = dfaSymbols;
+
+
+        return dfa;
+    }
+
+    private void powerSetConstruction(){
         Set<String> nfaStartStateAsSet = new LinkedHashSet<>();
         nfaStartStateAsSet.add(nfa.startState);
         Set<String> unformattedDFAStartState = takeEpsilonClosure(nfaStartStateAsSet);
-        /* The takeEpsilonClosure function populates the dfaStates collection. Since the only
-         * entry into the dfaStates thus far is the dfa start state, we transform the
-         * collection into an array, grab the first element from the array, and set it as the
-         * dfa start state.
-         */
-        String dfaStartState = ((String[])dfaStates.toArray())[0];
-        dfa.startState = dfaStartState;
+        dfa.startState = fixme;
+        newStateBuilder.clear();
 
         LinkedList<Set<String>> dfaStatesToBeMappedOut = new LinkedList<>();
         dfaStatesToBeMappedOut.push(unformattedDFAStartState);
         do {
             Set<String> currentDFAState = dfaStatesToBeMappedOut.pop();
+            Set<String> newDFAState = new LinkedHashSet<>();
             for (String symbol : dfa.symbols) {
-                Set<String> newDFAState = new LinkedHashSet<>();
                 for (String element : currentDFAState) {
-                    Set<String> partOfNewDFAState = new LinkedHashSet<>();
-                    partOfNewDFAState.addAll(nfa.getResultingStatesInTransitionTable(element, symbol));
-                    if (!partOfNewDFAState.isEmpty()) {
-                        newDFAState.addAll(takeEpsilonClosure(partOfNewDFAState));
-                    }
+                    newDFAState.addAll(move(element, symbol));
+                    newDFAState.addAll(takeEpsilonClosure(newDFAState));
+                    currentStateBuilder.append(element);
                 }
+                // The dfaStateBuilder string is used several times below. To avoid multiple string
+                // allocations, resulting from multiple toString() calls, we create a string once
+                // and assign it to dfaState.
+                newState = newStateBuilder.toString();
                 if (newDFAState.isEmpty()){
                     newDFAState = null;
                 }
-                else if(!unformattedDFAStates.contains(newDFAState)){
+                else if(!dfa.states.contains(newState)){
                     // Eureka! We found a new DFA state!
                     dfaStatesToBeMappedOut.push(newDFAState);
-                    unformattedDFAStates.add(newDFAState);
+                    dfa.states.add(newState);
+
                     if(isAFinishState){
-                        Set<Set<String>> dfaAcceptStates = dfa.acceptStates;
-                        dfaAcceptStates.add(newDFAState);
-                        dfa.setAcceptStates(dfaAcceptStates);
-                        // Reset the variable
-                        isAFinishState = false;
+                        dfa.acceptStates.add(newState);
+                        isAFinishState = false; // Reset the variable
                     }
                 }
-                dfa.setResultingStateInTransitionTable(currentDFAState, symbol, newDFAState);
+
+                newStateBuilder.clear();
+                dfa.setResultingStateInTransitionTable(currentDFAState, symbol, newState);
+                newDFAState.clear();
             }
 
         } while (!dfaStatesToBeMappedOut.isEmpty());
+    }
 
-        return dfa;
+    private Set<String> move(String element, String symbol){
+        return nfa.getResultingStatesInTransitionTable(element, symbol);
     }
 
     /**
@@ -84,6 +89,10 @@ class NFAConverter {
      * @return the resulting set after taking the epsilon closure of partOfDFAState
      */
     private Set<String> takeEpsilonClosure(Set<String> partOfDFAState) {
+        if (partOfDFAState.isEmpty()) {
+            return partOfDFAState;
+        }
+
         Set<String> eClosureOfPartialDFAState = new LinkedHashSet<>();
         // The epsilon closure could lead to many different states, and those states
         // could circle back around. It is important that we keep track of which NFA states
@@ -92,22 +101,21 @@ class NFAConverter {
         Set<String> checkedStates = new LinkedHashSet<>();
         LinkedList<String> toBeChecked = new LinkedList<>();
 
-        /* Choosing to add partOfDFAState to the two collections in a foreach loop avoids having to
-         * call addAll(partOfDFAState) on the collections separately which would result in iterating
-         * over partOfDFAState twice.
-         * The toBeChecked collection is updated when a new NFA state is reached that has not had
-         * the epsilon closure performed on it. We manually add the NFA states, in partOfDFAState,
-         * to the toBeChecked collection so that they will have the epsilon closure performed on
-         * them as well. We also need to manually add the NFA states, in partOfDFAState, to the
-         * checkedStates collection so that none are accidentally added a second time to the
-         * toBeChecked collection if taking the epsilon closure of an NFA state leads to one of them.
-         */
-        StringBuilder dfaStateBuilder = new StringBuilder();
+        //  Choosing to add partOfDFAState to the two collections in a foreach loop avoids having to
+        // call addAll(partOfDFAState) on the collections separately which would result in iterating
+        // over partOfDFAState twice.
+        // The toBeChecked collection is updated when a new NFA state is reached that has not had
+        // the epsilon closure performed on it. We manually add the NFA states, in partOfDFAState,
+        // to the toBeChecked collection so that they will have the epsilon closure performed on
+        // them as well. We also need to manually add the NFA states, in partOfDFAState, to the
+        // checkedStates collection so that none are accidentally added a second time to the
+        // toBeChecked collection if taking the epsilon closure of an NFA state leads to one of them.
         for (String state : partOfDFAState) {
             toBeChecked.add(state);
             checkedStates.add(state);
             eClosureOfPartialDFAState.add(state);
-            dfaStateBuilder.append(state);
+            newStateBuilder.append(state);
+            newStateBuilder.append(" ");
         }
 
         while(!toBeChecked.isEmpty()) {
@@ -119,11 +127,12 @@ class NFAConverter {
             Set<String> epsilonStates = nfa.getResultingStatesInTransitionTable(currentState, "ϵ");
             for (String state : epsilonStates) {
                 eClosureOfPartialDFAState.add(state);
-                dfaStateBuilder.append(state);
+                newStateBuilder.append(state);
+                newStateBuilder.append(" ");
             }
             checkedStates.add(currentState);
-            /* We need to add the epsilonStates to toBeChecked, and toBeChecked should not contain
-            already checked states. Remove any states that have already been checked. */
+            // We need to add the epsilonStates to toBeChecked, and toBeChecked should not contain
+            // already checked states. Remove any states that have already been checked.
             for (String state : epsilonStates){
                 if(checkedStates.contains(state)){
                     epsilonStates.remove(state);
@@ -132,7 +141,6 @@ class NFAConverter {
             toBeChecked.addAll(epsilonStates);
         }
 
-        dfaStates.add(dfaStateBuilder.toString());
         return eClosureOfPartialDFAState;
     }
 }
