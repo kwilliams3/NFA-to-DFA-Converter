@@ -75,6 +75,27 @@ final public class NFA extends FiniteAutomaton implements Parcelable {
         this.nfaTransitions = nfaTransitions;
     }
 
+    /**
+     * Converts the NFA into a DFA
+     * @return an equivalent DFA, or null if the NFA is not ready to be converted
+     */
+    private DFA convertToDFA(){
+        if (isReadyForConversion()) {
+            return NFAConverter.convert(this);
+        }
+
+        return null;
+    }
+
+    /**
+     * Check to see that all variables were filled out
+     * @return true if the NFA is ready to be converted
+     */
+    private boolean isReadyForConversion() {
+        return !states.isEmpty() && !symbols.isEmpty() &&
+                !startState.isEmpty() && !acceptStates.isEmpty();
+    }
+
     @Override
     public int describeContents() {
         return 0;
