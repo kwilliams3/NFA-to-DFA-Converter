@@ -22,4 +22,8 @@ final class MyStringBuilder {
         String string = stringBuilder.toString();
         return string.trim();
     }
+
+    void replaceWith(String string){
+        stringBuilder.replace(0, stringBuilder.length()-1, string);
+    }
 }

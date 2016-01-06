@@ -15,7 +15,7 @@ import java.util.Set;
 final public class NFA extends FiniteAutomaton implements Parcelable {
 
 
-    private HashMap<String, HashMap<String, Set<String>>> transitionTable;
+    private HashMap<String, HashMap<String, Set<String>>> transitionTable = new HashMap<>();
     // nfaTransitions is used solely for a visual display to the user of the NFA transitions.
     // The field is not actually used in any computations. The reason is that at some points we will
     // need to look up which state a transition will lead to. If we created a list of nfaTransition
@@ -36,18 +36,11 @@ final public class NFA extends FiniteAutomaton implements Parcelable {
     }
 
     /**
-     * Constructs the NFA transition table and NFA transitions all
-     *  at once in order to keep the runtime no longer than O(n^2)
-     * @param states string array of states in the nfa
-     * @param symbols string array of symbols in the nfa
+     * Constructs NFA transitions that are only used for visual display to the user
      */
-    void setTransitionTableAndTransitions(Set<String> states, Set<String> symbols) {
-        transitionTable = new HashMap<>(states.size() * symbols.size());
+    void setForDisplayOnlyTransitions() {
         for (String state : states) {
             for (String symbol: symbols) {
-                HashMap<String, Set<String>> secondDimension = new HashMap<>();
-                secondDimension.put(symbol,null);
-                transitionTable.put(state, secondDimension);
                 nfaTransitions.add(new NFATransition(state, symbol));
             }
         }
@@ -64,7 +57,9 @@ final public class NFA extends FiniteAutomaton implements Parcelable {
     }
 
     public void setResultingStatesInTransitionTable(String fromState, String symbol, Set<String> toStates){
-        transitionTable.get(fromState).put(symbol, toStates);
+        HashMap<String, Set<String>> secondDimension = new HashMap<>();
+        secondDimension.put(symbol, toStates);
+        transitionTable.put(fromState, secondDimension);
     }
 
     public Set<NFATransition> getNFATransitions() {

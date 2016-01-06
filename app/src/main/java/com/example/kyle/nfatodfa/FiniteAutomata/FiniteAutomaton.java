@@ -3,7 +3,6 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -25,9 +24,7 @@ abstract class FiniteAutomaton implements Parcelable {
 
     public void setStates(Set<String> states){
         this.states = states;
-        if (this.states != null && getSymbols() != null){
-            setTransitionTableAndTransitions(this.states, getSymbols());
-        }
+        trySettingForDisplayOnlyTransitions();
     }
 
     public Set<String> getSymbols() {
@@ -36,9 +33,7 @@ abstract class FiniteAutomaton implements Parcelable {
 
     public void setSymbols(Set<String> symbols){
         this.symbols = symbols;
-        if (states != null && getSymbols() != null){
-            setTransitionTableAndTransitions(states, getSymbols());
-        }
+        trySettingForDisplayOnlyTransitions();
     }
 
     public String getStartState() {
@@ -57,12 +52,24 @@ abstract class FiniteAutomaton implements Parcelable {
         this.acceptStates = acceptStates;
     }
 
-    abstract void setTransitionTableAndTransitions(Set<String> states, Set<String> symbols);
+    abstract void setForDisplayOnlyTransitions();
 
     public int getNumberOfTransitions() {
         if (states != null && getSymbols() != null) {
             return (states.size() * getSymbols().size());
         } else {return 0;}
+    }
+
+    /**
+     * Tries to set the transitions that are only used for visual display to the user
+     * @return true if the display only transitions were successfully set, otherwise returns false
+     */
+    private boolean trySettingForDisplayOnlyTransitions(){
+        if (states != null && symbols != null){
+            setForDisplayOnlyTransitions();
+            return true;
+        }
+        return false;
     }
 
     @Override

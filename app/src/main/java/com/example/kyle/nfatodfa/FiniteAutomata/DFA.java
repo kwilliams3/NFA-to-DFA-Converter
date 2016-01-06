@@ -17,7 +17,7 @@ import java.util.Set;
  */
 final class DFA extends FiniteAutomaton implements Parcelable {
 
-    private HashMap<String, HashMap<String, String>> transitionTable;
+    private HashMap<String, HashMap<String, String>> transitionTable = new HashMap<>();
     // dfaTransitions is used solely for a visual display to the user of the DFA transitions.
     // The field is not actually used in any computations. The reason is that at some points we will
     // need to look up which state a transition will lead to. If we created a list of dfaTransition
@@ -38,18 +38,11 @@ final class DFA extends FiniteAutomaton implements Parcelable {
     }
 
     /**
-     * Constructs the DFA transition table and DFA transitions all
-     *  at once in order to keep the complexity no larger than O(n^2)
-     * @param states string array of array of nfa states (DFA states are a set of states)
-     * @param symbols string array of symbols in the dfa
+     * Constructs NFA transitions that are only used for visual display to the user
      */
-    void setTransitionTableAndTransitions(Set<String> states, Set<String> symbols) {
-        transitionTable = new HashMap<>(states.size() * symbols.size());
+    void setForDisplayOnlyTransitions() {
         for (String state : states) {
             for (String symbol: symbols) {
-                HashMap<String, String> secondDimension = new HashMap<>();
-                secondDimension.put(symbol, null);
-                transitionTable.put(state, secondDimension);
                 dfaTransitions.add(new DFATransition(state, symbol));
             }
         }
@@ -66,7 +59,9 @@ final class DFA extends FiniteAutomaton implements Parcelable {
     }
 
     public void setResultingStateInTransitionTable(String fromState, String symbol, String toState){
-        transitionTable.get(fromState).put(symbol, toState);
+        HashMap<String, String> secondDimension = new HashMap<>();
+        secondDimension.put(symbol, null);
+        transitionTable.put(fromState, secondDimension);
     }
 
     public Set<DFATransition> getDFATransitions() {

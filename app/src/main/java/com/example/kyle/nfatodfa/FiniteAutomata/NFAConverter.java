@@ -1,5 +1,6 @@
 package com.example.kyle.nfatodfa.FiniteAutomata;
 
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -21,17 +22,20 @@ final class NFAConverter {
 
     private static DFA dfa = new DFA(); // the DFA to be returned
     private static Set<String> dfaStates = new LinkedHashSet<>();
+    private static Set<String> dfaSymbols;
     private static String dfaStartState;
     private static Set<String> dfaAcceptStates = new LinkedHashSet<>();
 
-    private static String currentState;
-    private static String newDFAState;
-    private static Set<String> currentUnformattedDFAState;
-    private static Set<String> newUnformattedDFAState;
-    private static MyStringBuilder newDFAStateBuilder = new MyStringBuilder();
-    private static MyStringBuilder currentStateBuilder = new MyStringBuilder();
-    private static boolean dfaStateIsAnAcceptState = false; // Keeps track of whether a DFA state is an accept state or not
-    private static LinkedList<Set<String>> dfaStatesToBeMappedOut = new LinkedList<>();
+    // A DFA state name can be a string containing all the names of the NFA states which it
+    // represents. This custom string builder is used in the takeEpsilonClosure method to
+    // construct that string which is then later assigned to the DFA state.
+    private static MyStringBuilder newFormattedDFAStateBuilder = new MyStringBuilder();
+
+    // Used to construct a string that is used to fill the DFA transition table
+    // δ(oldFormattedDFAState, symbol)-->newFormattedDFAState
+    private static MyStringBuilder oldFormattedDFAStateBuilder = new MyStringBuilder();
+
+    private static boolean dfaStateIsAnAcceptState = false;
 
     /**
      * Converts an NFA to an equivalent DFA
@@ -41,15 +45,18 @@ final class NFAConverter {
         nfa = nfaToBeConverted;
         powersetConstruction();
         dfa.states = dfaStates;
-        dfa.symbols = convertNFASymbols();
+        dfa.symbols = dfaSymbols;
         dfa.startState = dfaStartState;
         dfa.acceptStates = dfaAcceptStates;
-        // The DFA transition table is filled inside powersetConstruction();
-
+        // DFA transition table is filled out during powersetConstruction()
 
         return dfa;
     }
 
+    /**
+     * Converts an NFA alphabet to a DFA alphabet
+     * @return the NFA alphabet with ϵ removed
+     */
     private static Set<String> convertNFASymbols(){
         Set<String> dfaSymbols = nfa.symbols;
         dfaSymbols.remove("ϵ");
@@ -94,41 +101,52 @@ final class NFAConverter {
      * 4.The finish states of the DFA are those which contain any of the finish states of the NFA."
      */
     private static void powersetConstruction(){
-        Set<String> unformattedDFAStartState = createDFAStartState();
-        dfaStatesToBeMappedOut.push(unformattedDFAStartState);
-        do {
+        // Unformatted DFA states are sets of sets of strings, and they are only used during the
+        // conversion from NFA to DFA. Actual DFA states are simply sets of strings.
+        // This is why there is a need for two kinds of fields - sets of unformatted DFA states
+        // and sets of formatted states. Both sets are filled during the same loops in order to avoid
+        // reiterating over, possibly very long, sets of NFA states.
+        Set<String> currentUnformattedDFAState;
+        Set<String> newUnformattedDFAState = new LinkedHashSet<>();
+
+        String newFormattedDFAState;
+        String oldFormattedDFAState;
+
+        LinkedList<Set<String>> dfaStatesToBeMappedOut = new LinkedList<>();
+        dfaStatesToBeMappedOut.push(createDFAStartState()); // Step #1
+
+        oldFormattedDFAState = oldFormattedDFAStateBuilder.toString();
+
+        dfaSymbols = convertNFASymbols();
+        while (!dfaStatesToBeMappedOut.isEmpty()) {
             currentUnformattedDFAState = dfaStatesToBeMappedOut.pop();
-            newUnformattedDFAState = new LinkedHashSet<>();
-            for (String symbol : dfa.symbols) {
+            for (String symbol : dfaSymbols) { // Step #2
                 for (String element : currentUnformattedDFAState) {
-                    newUnformattedDFAState.addAll(move(element, symbol));
-                    newUnformattedDFAState.addAll(takeEpsilonClosure(newUnformattedDFAState));
-                    currentStateBuilder.append(element);
+                    newUnformattedDFAState.addAll(move(element, symbol)); // "apply move"
+                    newUnformattedDFAState.addAll(takeEpsilonClosure(newUnformattedDFAState)); // "apply e-closure"
                 }
-                // The dfaStateBuilder string is used several times below. To avoid multiple string
-                // allocations, resulting from multiple toString() calls, we create a string once
-                // and assign it to dfaState.
-                NFAConverter.newDFAState = newDFAStateBuilder.toString();
-                if (newUnformattedDFAState.isEmpty()){
-                    newUnformattedDFAState = null;
-                }
-                else if(!dfa.states.contains(NFAConverter.newDFAState)){
+
+                newFormattedDFAState = newFormattedDFAStateBuilder.toString();
+
+                if(!NFAConverter.dfaStates.contains(newFormattedDFAState)){
                     // Eureka! We found a new DFA state!
                     dfaStatesToBeMappedOut.push(newUnformattedDFAState);
-                    dfa.states.add(NFAConverter.newDFAState);
-
+                    NFAConverter.dfaStates.add(newFormattedDFAState);
                     if(dfaStateIsAnAcceptState){
-                        dfa.acceptStates.add(NFAConverter.newDFAState);
+                        NFAConverter.dfaAcceptStates.add(newFormattedDFAState);
                         dfaStateIsAnAcceptState = false; // Reset the variable
                     }
                 }
-
-                newDFAStateBuilder.clear();
-                dfa.setResultingStateInTransitionTable(currentUnformattedDFAState, symbol, this.newDFAState);
                 newUnformattedDFAState.clear();
+
+                dfa.setResultingStateInTransitionTable(oldFormattedDFAState, symbol, newFormattedDFAState);
+
+                oldFormattedDFAState = newFormattedDFAStateBuilder.toString();
+                oldFormattedDFAStateBuilder.replaceWith(newFormattedDFAState);
+                newFormattedDFAStateBuilder.clear();
             }
 
-        } while (!dfaStatesToBeMappedOut.isEmpty());
+        }
     }
 
     /**
@@ -142,8 +160,10 @@ final class NFAConverter {
         Set<String> nfaStartStateAsSet = new LinkedHashSet<>();
         nfaStartStateAsSet.add(nfa.startState);
         Set<String> unformattedDFAStartState = takeEpsilonClosure(nfaStartStateAsSet);
-        dfa.startState = newDFAStateBuilder.toString();
-        newDFAStateBuilder.clear();
+        String newFormattedDFAState = newFormattedDFAStateBuilder.toString();
+        NFAConverter.dfaStartState = newFormattedDFAState;
+        oldFormattedDFAStateBuilder.replaceWith(newFormattedDFAState);
+        newFormattedDFAStateBuilder.clear();
         return unformattedDFAStartState;
     }
 
@@ -183,9 +203,10 @@ final class NFAConverter {
             toBeChecked.add(state);
             checkedStates.add(state);
             eClosureOfNewDFAState.add(state);
-            newDFAStateBuilder.append(state);
+            newFormattedDFAStateBuilder.append(state);
         }
 
+        Set<String> epsilonStates;
         while(!toBeChecked.isEmpty()) {
             String currentNFAState = toBeChecked.pop();
             // If currentNFAState is an accept state, then the entire
@@ -193,10 +214,10 @@ final class NFAConverter {
             if (nfa.acceptStates.contains(currentNFAState)) {
                 dfaStateIsAnAcceptState = true;
             }
-            Set<String> epsilonStates = nfa.getResultingStatesInTransitionTable(currentNFAState, "ϵ");
+            epsilonStates = nfa.getResultingStatesInTransitionTable(currentNFAState, "ϵ");
             for (String state : epsilonStates) {
                 if (!eClosureOfNewDFAState.contains(state)){
-                    newDFAStateBuilder.append(state);
+                    newFormattedDFAStateBuilder.append(state);
                     eClosureOfNewDFAState.add(state);
                 }
             }
