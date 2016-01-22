@@ -12,11 +12,7 @@ import java.util.Set;
  * The DFA class represents a deterministic finite automaton.
  *
  * @author Kyle Williams
- * @since 12/9/15.
- * TODO: FINISH THE CONVERTER, needs to be changed due to DFA changes
- * TODO: Doc strings for everything necessary throughout all classes - to include doc stringing
- * TODO: the classes themselves (i.e. right here); flood the NFAConverter class' functions
- * TODO: with comments that explain what's going on and why; set things to "final" that should be final
+ * @since 12/9/15
  */
 final class DFA extends FiniteAutomaton implements Parcelable {
 

@@ -12,7 +12,7 @@ import java.util.Set;
  * The NFA class represents a nondeterministic finite automaton.
  *
  * @author Kyle Williams
- * @since 12/9/15.
+ * @since 12/9/15
  */
 final public class NFA extends FiniteAutomaton implements Parcelable {
 

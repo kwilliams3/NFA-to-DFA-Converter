@@ -5,7 +5,8 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
  * calculations for the DFA which they belong to. Instead, they are only used as a visual
  * display, of a specific DFA transition, to the user.
  *
- * Created by kyle on 12/16/15.
+ * @author Kyle Williams
+ * @since 12/16/15
  */
 final public class DFATransition extends Transition{
     private String toState;

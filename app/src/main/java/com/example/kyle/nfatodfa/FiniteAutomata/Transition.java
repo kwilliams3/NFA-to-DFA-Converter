@@ -7,7 +7,7 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
  * they are only used as a visual display, of a specific transition, to the user.
  *
  * @author Kyle Williams
- * @since 12/16/15.
+ * @since 12/16/15
  */
 abstract class Transition {
     protected String fromState;

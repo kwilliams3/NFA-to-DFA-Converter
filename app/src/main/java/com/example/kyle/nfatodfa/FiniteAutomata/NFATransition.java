@@ -8,7 +8,7 @@ import java.util.Set;
  * display, of a specific NFA transition, to the user.
  *
  * @author Kyle Williams
- * @since 12/16/15.
+ * @since 12/16/15
  */
 final public class NFATransition extends Transition{
     private Set<String> toStates;

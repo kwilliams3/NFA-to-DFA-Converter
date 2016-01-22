@@ -13,12 +13,12 @@ import com.example.kyle.nfatodfa.R;
 import java.util.ArrayList;
 
 /**
- * Created by kyle on 12/5/15.
+ * @author Kyle Williams
+ * @since 12/5/15
  */
 public class TransitionsAdapter extends RecyclerView.Adapter<TransitionViewHolder> {
 
     private LayoutInflater inflater;
-    private NFA nfa;
     private ArrayList<NFATransition> nfaTransitions;
     public static String[] editTextData;
 

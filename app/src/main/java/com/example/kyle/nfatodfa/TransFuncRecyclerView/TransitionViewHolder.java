@@ -10,7 +10,8 @@ import android.widget.TextView;
 import com.example.kyle.nfatodfa.R;
 
 /**
- * Created by kyle on 12/8/15.
+ * @author Kyle Williams
+ * @since 12/8/15
  */
 class TransitionViewHolder extends RecyclerView.ViewHolder {
 

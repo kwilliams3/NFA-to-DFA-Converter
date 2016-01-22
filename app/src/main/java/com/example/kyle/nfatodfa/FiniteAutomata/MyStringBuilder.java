@@ -5,7 +5,7 @@ package com.example.kyle.nfatodfa.FiniteAutomata;
  * It's used in NFAConverter to aid in the conversion process.
  *
  * @author Kyle Williams
- * @since 1/4/16.
+ * @since 1/4/16
  */
 final class MyStringBuilder {
     StringBuilder stringBuilder = new StringBuilder();
