@@ -9,23 +9,30 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Represents a non
- * Created by kyle on 12/9/15.
+ * The NFA class represents a nondeterministic finite automaton.
+ *
+ * @author Kyle Williams
+ * @since 12/9/15.
  */
 final public class NFA extends FiniteAutomaton implements Parcelable {
 
-
+    // We use a HashMap to look up transitions in the NFA. The reason I chose a HashMap is because
+    // at some points we will need to look up which state a transition will lead to.
+    // If we created a list of nfaTransition objects, then we would have to iterate through that
+    // list to find the transition we are looking for. Unfortunately, that would be a O(n)
+    // complexity. So, to save time, we use a HashMap instead which allows us to look up a
+    // transition in constant time - O(1).
     private HashMap<String, HashMap<String, Set<String>>> transitionTable = new HashMap<>();
-    // nfaTransitions is used solely for a visual display to the user of the NFA transitions.
-    // The field is not actually used in any computations. The reason is that at some points we will
-    // need to look up which state a transition will lead to. If we created a list of nfaTransition
-    // objects. Then, we would have to iterate through that list to find the transition we are
-    // looking for. Unfortunately, that would be a O(n) complexity. So, to save time, we use a
-    // HashMap instead which allows us to look up a transition in constant time - O(1).
-    private Set<NFATransition> nfaTransitions = new LinkedHashSet<>();;
+    // displayOnlyTransitions is used solely for a visual display to the user of the NFA transitions.
+    // The field is not actually used in any computations.
+    private Set<NFATransition> displayOnlyTransitions = new LinkedHashSet<>();;
 
     public NFA() {}
 
+    // Parcel.writeMap does not store the type of HashMap in use. So, nfaParcel.readHashMap produces
+    // an Unchecked assignment. The transitionTable could be passed using a Bundle, but the same
+    // Unchecked assignment would be produced when using getSerializable after first using
+    // writeSerializable.
     @SuppressWarnings("unchecked")
     public NFA(Parcel nfaParcel) {
         states = new LinkedHashSet<>(Arrays.asList(nfaParcel.createStringArray()));
@@ -38,10 +45,10 @@ final public class NFA extends FiniteAutomaton implements Parcelable {
     /**
      * Constructs NFA transitions that are only used for visual display to the user
      */
-    void setForDisplayOnlyTransitions() {
+    void createForDisplayOnlyTransitions() {
         for (String state : states) {
             for (String symbol: symbols) {
-                nfaTransitions.add(new NFATransition(state, symbol));
+                displayOnlyTransitions.add(new NFATransition(state, symbol));
             }
         }
     }
@@ -63,11 +70,11 @@ final public class NFA extends FiniteAutomaton implements Parcelable {
     }
 
     public Set<NFATransition> getNFATransitions() {
-        return nfaTransitions;
+        return displayOnlyTransitions;
     }
 
-    public void setNfaTransitions(Set<NFATransition> nfaTransitions) {
-        this.nfaTransitions = nfaTransitions;
+    public void setDisplayOnlyTransitions(Set<NFATransition> displayOnlyTransitions) {
+        this.displayOnlyTransitions = displayOnlyTransitions;
     }
 
     /**

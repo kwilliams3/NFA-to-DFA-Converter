@@ -88,7 +88,7 @@ public class TransFuncFragment extends Fragment {
                     nfa.setResultingStatesInTransitionTable(transition.getFromState(),
                             transition.getSymbol(), transition.getToStates());
                 }
-                nfa.setNfaTransitions(nfaTransitions);
+                nfa.setDisplayOnlyTransitions(nfaTransitions);
                 for(NFATransition transition : nfaTransitions){
                     Toast.makeText(getActivity().getApplicationContext(),
                             transition.getTransitionStringFull(), Toast.LENGTH_SHORT).show();

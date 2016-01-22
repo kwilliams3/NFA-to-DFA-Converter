@@ -7,9 +7,12 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * This class isn't truly necessary, but I've implemented it for organizational purposes.
- * All NFAs and DFAs are finite automata, and I wanted to keep that hierarchy in my code.
- * Created by kyle on 12/9/15.
+ * This class contains the characteristics that are shared by all finite automata. This class
+ * cannot be instantiated due to the fact that a finite automaton is only a term used to describe
+ * specific automata.
+ *
+ * @author Kyle Williams
+ * @since 12/9/15
  */
 abstract class FiniteAutomaton implements Parcelable {
 
@@ -52,7 +55,12 @@ abstract class FiniteAutomaton implements Parcelable {
         this.acceptStates = acceptStates;
     }
 
-    abstract void setForDisplayOnlyTransitions();
+    /**
+     * The "displayOnlyTransitions" are a set of strings that represent transitions in a finite
+     * automaton. They are not actually used in any conversions. Instead, they are only used to
+     * visually "display" transitions to the user.
+     */
+    abstract void createForDisplayOnlyTransitions();
 
     public int getNumberOfTransitions() {
         if (states != null && getSymbols() != null) {
@@ -66,7 +74,7 @@ abstract class FiniteAutomaton implements Parcelable {
      */
     private boolean trySettingForDisplayOnlyTransitions(){
         if (states != null && symbols != null){
-            setForDisplayOnlyTransitions();
+            createForDisplayOnlyTransitions();
             return true;
         }
         return false;

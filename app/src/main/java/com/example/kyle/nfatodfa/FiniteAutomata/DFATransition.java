@@ -1,6 +1,10 @@
 package com.example.kyle.nfatodfa.FiniteAutomata;
 
 /**
+ * This class is used to display DFA transitions. Instances of this class are not used in any
+ * calculations for the DFA which they belong to. Instead, they are only used as a visual
+ * display, of a specific DFA transition, to the user.
+ *
  * Created by kyle on 12/16/15.
  */
 final public class DFATransition extends Transition{
@@ -19,6 +23,10 @@ final public class DFATransition extends Transition{
         this.toState = toState;
     }
 
+    /**
+     * Returns the transition as a string, with the resulting state, for visual display to the user
+     * @return a string with the resulting state
+     */
     public String getTransitionStringFull(){
         return "\uD835\uDEFF(" + fromState + ", " +
                 symbol + ") \u2192" + toState;

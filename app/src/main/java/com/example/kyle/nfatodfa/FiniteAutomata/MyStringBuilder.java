@@ -1,7 +1,11 @@
 package com.example.kyle.nfatodfa.FiniteAutomata;
 
 /**
- * Created by kyle on 1/4/16.
+ * My custom StringBuilder
+ * It's used in NFAConverter to aid in the conversion process.
+ *
+ * @author Kyle Williams
+ * @since 1/4/16.
  */
 final class MyStringBuilder {
     StringBuilder stringBuilder = new StringBuilder();
@@ -11,6 +15,9 @@ final class MyStringBuilder {
         stringBuilder.append(" ");
     }
 
+    /**
+     * Clears the contents of the current MyStringBuilder instance
+     */
     void clear(){
         // Special thanks to anubhava for his answer on Stack Overflow regarding
         // whether it is better to reuse an existing StringBuilder or reallocate a new one.
@@ -23,6 +30,10 @@ final class MyStringBuilder {
         return string.trim();
     }
 
+    /**
+     * Replaces the contents of the MyStringBuilder instance with "string"
+     * @param string the string that will replace the string currently held by MyStringBuilder
+     */
     void replaceWith(String string){
         stringBuilder.replace(0, stringBuilder.length()-1, string);
     }
