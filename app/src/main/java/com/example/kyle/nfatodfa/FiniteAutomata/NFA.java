@@ -81,7 +81,7 @@ final public class NFA extends FiniteAutomaton implements Parcelable {
      * Converts the NFA into a DFA
      * @return an equivalent DFA, or null if the NFA is not ready to be converted
      */
-    private DFA convertToDFA(){
+    public DFA convertToDFA(){
         if (isReadyForConversion()) {
             return NFAConverter.convert(this);
         }
@@ -94,8 +94,14 @@ final public class NFA extends FiniteAutomaton implements Parcelable {
      * @return true if the NFA is ready to be converted
      */
     private boolean isReadyForConversion() {
+        // transitionTable is legally allowed to be empty. The user may very well want an NFA with
+        // no transitions. This is highly unlikely, but the accommodation should still be made.
         return !states.isEmpty() && !symbols.isEmpty() &&
                 !startState.isEmpty() && !acceptStates.isEmpty();
+    }
+
+    public int getNumberOfTransitions() {
+        return transitionTable.size();
     }
 
     @Override

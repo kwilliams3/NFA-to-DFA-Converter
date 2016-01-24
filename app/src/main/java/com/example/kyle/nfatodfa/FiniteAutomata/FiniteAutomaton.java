@@ -62,12 +62,6 @@ abstract class FiniteAutomaton implements Parcelable {
      */
     abstract void createForDisplayOnlyTransitions();
 
-    public int getNumberOfTransitions() {
-        if (states != null && getSymbols() != null) {
-            return (states.size() * getSymbols().size());
-        } else {return 0;}
-    }
-
     /**
      * Tries to set the transitions that are only used for visual display to the user
      * @return true if the display only transitions were successfully set, otherwise returns false

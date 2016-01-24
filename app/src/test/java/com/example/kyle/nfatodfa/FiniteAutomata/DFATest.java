@@ -12,7 +12,7 @@ import java.util.Set;
  * Tests the methods within the DFA class
  *
  * @author Kyle Williams
- * @since 1/22/16.
+ * @since 1/24/16.
  */
 public class DFATest {
 
@@ -26,17 +26,17 @@ public class DFATest {
     public void setUp() {
         testDFA = new DFA();
         states = new LinkedHashSet<>();
-        states.add("state1");
-        states.add("state2");
-        states.add("state3");
         symbols = new LinkedHashSet<>();
-        symbols.add("symbol1");
-        symbols.add("symbol2");
-        symbols.add("symbol3");
         startState = "startState";
         acceptStates = new LinkedHashSet<>();
-        acceptStates.add("state1");
-        acceptStates.add("state2");
+
+        for (int i=1; i<=3; i++){
+            states.add("state" + i);
+            symbols.add("symbol" + i);
+        }
+        for (int i=1; i<=2; i++){
+            acceptStates.add("state" + i);
+        }
 
         testDFA.setStates(states);
         testDFA.setSymbols(symbols);

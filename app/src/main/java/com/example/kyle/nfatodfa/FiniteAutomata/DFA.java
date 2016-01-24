@@ -76,6 +76,10 @@ final class DFA extends FiniteAutomaton implements Parcelable {
         this.dfaTransitions = dfaTransitions;
     }
 
+    public int getNumberOfTransitions() {
+        return transitionTable.size();
+    }
+
     @Override
     public int describeContents() {
         return 0;
