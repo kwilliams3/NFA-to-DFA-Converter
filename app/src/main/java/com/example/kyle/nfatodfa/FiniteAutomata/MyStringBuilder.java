@@ -35,6 +35,12 @@ final class MyStringBuilder {
      * @param string the string that will replace the string currently held by MyStringBuilder
      */
     void replaceWith(String string){
-        stringBuilder.replace(0, stringBuilder.length()-1, string);
+        int endIndex;
+        if (stringBuilder.length() == 0){
+            endIndex = 0;
+        } else {
+            endIndex = stringBuilder.length()-1;
+        }
+        stringBuilder.replace(0, endIndex, string);
     }
 }

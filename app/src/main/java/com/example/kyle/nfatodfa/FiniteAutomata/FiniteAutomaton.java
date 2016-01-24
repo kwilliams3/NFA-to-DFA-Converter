@@ -74,6 +74,12 @@ abstract class FiniteAutomaton implements Parcelable {
         return false;
     }
 
+    public int getNumberOfTransitions() {
+        if (states != null && getSymbols() != null) {
+            return (states.size() * getSymbols().size());
+        } else {return 0;}
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         String[] states = new String[this.states.size()];

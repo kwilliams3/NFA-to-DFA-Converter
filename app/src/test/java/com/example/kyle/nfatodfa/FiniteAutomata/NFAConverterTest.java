@@ -32,6 +32,7 @@ public class NFAConverterTest {
             states.add("state" + i);
             symbols.add("symbol" + i);
         }
+        symbols.add("ϵ");
         // Fill acceptStates set
         for (int i=1; i<=2; i++){
             acceptStates.add("state" + i);
@@ -59,6 +60,44 @@ public class NFAConverterTest {
         }
 
         DFA convertedNFA = NFAConverter.convert(testNFA);
+
         Assert.assertNotNull(convertedNFA);
+
+        DFA correctDFA = new DFA();
+        // States should remain the same before and after conversion for this specific test
+        correctDFA.states = testNFA.states;
+        // Symbols should be the same with the exception of the removal of "ϵ" for the DFA
+        Set<String> correctlyConvertedSymbols = testNFA.symbols;
+        correctlyConvertedSymbols.remove("ϵ");
+        correctDFA.symbols = correctlyConvertedSymbols;
+        // Start and accept states should remain the same because there were no ϵ-transitions
+        correctDFA.startState = testNFA.startState;
+        correctDFA.acceptStates = testNFA.acceptStates;
+
+        // Need to build transition table for the correct DFA
+        // It should look exactly the same as the NFA transition table with the exception
+        // that the resulting states in a transition will not be of type Set
+        for (int i=1; i<=3; i++){
+            for (int j=1; j<=3; j++){
+                correctDFA.setResultingStateInTransitionTable("state" + j, "symbol" + i, "state" + i);
+            }
+        }
+
+
+
+        // Checking for correctly converted states
+        Assert.assertEquals(correctDFA.states, convertedNFA.states);
+
+        // Checking for correctly converted symbols
+        Assert.assertEquals(correctlyConvertedSymbols, convertedNFA.symbols);
+
+        // Checking for correctly converted transition table
+        Assert.assertEquals(correctDFA.getTransitionTable(), convertedNFA.getTransitionTable());
+
+        // Checking for correctly converted start state
+        Assert.assertEquals(correctDFA.startState, convertedNFA.startState);
+
+        // Checking for correctly converted accept states
+        Assert.assertEquals(correctDFA.acceptStates, convertedNFA.acceptStates);
     }
 }

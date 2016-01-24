@@ -60,7 +60,11 @@ final public class NFA extends FiniteAutomaton implements Parcelable {
      * @return array containing resulting states that can be reached after processing the transition
      */
     public Set<String> getResultingStatesInTransitionTable(String fromState, String symbol) {
-        return transitionTable.get(fromState).get(symbol);
+        Set<String> resultingTransition = transitionTable.get(fromState).get(symbol);
+        if (resultingTransition == null){
+            return new LinkedHashSet<>();
+        }
+        return resultingTransition;
     }
 
     public void setResultingStatesInTransitionTable(String fromState, String symbol, Set<String> toStates){
@@ -100,8 +104,8 @@ final public class NFA extends FiniteAutomaton implements Parcelable {
                 !startState.isEmpty() && !acceptStates.isEmpty();
     }
 
-    public int getNumberOfTransitions() {
-        return transitionTable.size();
+    HashMap<String, HashMap<String, Set<String>>> getTransitionTable() {
+        return transitionTable;
     }
 
     @Override
