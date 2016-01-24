@@ -16,6 +16,9 @@ import com.example.kyle.nfatodfa.FiniteAutomata.NFATransition;
 import com.example.kyle.nfatodfa.TransFuncRecyclerView.TransitionsAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 
 /**
@@ -79,16 +82,16 @@ public class TransFuncFragment extends Fragment {
         convertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<NFATransition> nfaTransitions = nfa.getNFATransitions();
+                ArrayList<NFATransition> nfaTransitions = new ArrayList<>(nfa.getNFATransitions());
                 String[] toStates = TransitionsAdapter.getEditTextData();
                 for(int i=0; i<toStates.length; i++){
-                    String[] nfaToStates = toStates[i].split("\\s+");
+                    Set<String> nfaToStates = new LinkedHashSet<>(Arrays.asList(toStates[i].split("\\s+")));
                     NFATransition transition = nfaTransitions.get(i);
                     transition.setToStates(nfaToStates);
                     nfa.setResultingStatesInTransitionTable(transition.getFromState(),
                             transition.getSymbol(), transition.getToStates());
                 }
-                nfa.setDisplayOnlyTransitions(nfaTransitions);
+                nfa.setDisplayOnlyTransitions(new LinkedHashSet<>(nfaTransitions));
                 for(NFATransition transition : nfaTransitions){
                     Toast.makeText(getActivity().getApplicationContext(),
                             transition.getTransitionStringFull(), Toast.LENGTH_SHORT).show();

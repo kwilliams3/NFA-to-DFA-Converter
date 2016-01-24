@@ -12,6 +12,10 @@ import android.widget.Toast;
 
 import com.example.kyle.nfatodfa.FiniteAutomata.NFA;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,13 +67,14 @@ public class StatesSymbolsFragment extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(), R.string.incompleteError,
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    String[] statesArr = states.split(" ");
-                    String[] symbolsArr = symbols.split(" ");
+                    Set<String> statesSet = new LinkedHashSet<>(Arrays.asList(states.split(" ")));
+                    Set<String> symbolsSet = new LinkedHashSet<>(Arrays.asList(symbols.split(" ")));
+                    Set<String> acceptStatesSet = new LinkedHashSet<>(Arrays.asList(acceptStates.split(" ")));
                     NFA nfa = new NFA();
-                    nfa.setStates(statesArr);
-                    nfa.setSymbols(symbolsArr);
+                    nfa.setStates(statesSet);
+                    nfa.setSymbols(symbolsSet);
                     nfa.setStartState(startState);
-                    nfa.setAcceptStates(acceptStates.split(" "));
+                    nfa.setAcceptStates(acceptStatesSet);
                     onNextButtonClick(nfa);
                 }
             }

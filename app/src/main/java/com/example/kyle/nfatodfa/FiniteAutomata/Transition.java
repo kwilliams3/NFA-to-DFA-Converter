@@ -21,7 +21,7 @@ abstract class Transition {
         this.fromState = fromState;
     }
 
-    String getSymbol() {
+    public String getSymbol() {
         return symbol;
     }
 
