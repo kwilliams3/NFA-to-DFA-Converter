@@ -9,7 +9,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Created by kyle on 1/24/16.
+ * @author Kyle Williams
+ * @since 1/24/16.
  */
 public class NFAConverterTest {
     private NFA testNFA;
@@ -57,7 +58,7 @@ public class NFAConverterTest {
             toStates.clear();
         }
 
-        DFA convertedNFA = testNFA.convertToDFA();
+        DFA convertedNFA = NFAConverter.convert(testNFA);
         Assert.assertNotNull(convertedNFA);
     }
 }
